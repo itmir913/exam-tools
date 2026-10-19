@@ -468,6 +468,34 @@ for (const c of CASES) {
     rl.ok ? rl.kindId + ' ' + rl.items.length : '못 읽음');
 }
 
+/* ───────────── 13-1. 교사가 손으로 정한 순서 ───────────── */
+{
+  const text = '① 가\t② 나다\t③ 라마바\n④ 사아자차\t⑤ 카타파하거';
+  const r = X.rearrange(text, { order: 'len', picked: [4, 0, 3, 1, 2] });
+  check('손으로 정한 순서를 그대로 쓴다', r.picked.join() === '4,0,3,1,2', r.picked.join());
+  check('손으로 정한 순서대로 놓는다', r.placed.join('|') === '카타파하거|가|사아자차|나다|라마바', r.placed.join('|'));
+  check('번호는 자리에 남는다', r.markers.join('') === '①②③④⑤', r.markers.join(''));
+  check('배치를 그대로 두면 줄도 그대로다', r.out === '① 카타파하거\t② 가\t③ 사아자차\n④ 나다\t⑤ 라마바', show(r.out));
+
+  // 배치·번호·구분자를 바꿔도 손으로 정한 순서는 따라간다
+  for (const layout of LAYOUTS) {
+    const s2 = X.rearrange(text, { order: 'abcDesc', layout, mark: 'num', picked: [4, 0, 3, 1, 2] });
+    check(`손으로 정한 순서: ${layout}행에서도 그대로`, s2.placed.join('|') === r.placed.join('|'), s2.placed.join('|'));
+  }
+
+  // 받은 순서가 선지 수와 맞지 않거나 겹치면 버리고 고른 기준대로 늘어놓는다
+  const auto = X.rearrange(text, { order: 'len' }).picked.join();
+  for (const bad of [[0, 1, 2], [0, 0, 1, 2, 3], [0, 1, 2, 3, 5], [0, 1, 2, 3, 1.5], 'x', null]) {
+    const b = X.rearrange(text, { order: 'len', picked: bad });
+    check(`맞지 않는 순서 ${show(bad)}는 버린다`, b.picked.join() === auto, b.picked.join());
+  }
+
+  // 넘긴 배열을 건드리지 않는다
+  const mine = [4, 0, 3, 1, 2];
+  X.rearrange(text, { picked: mine }).picked.reverse();
+  check('넘긴 순서 배열을 바꾸지 않는다', mine.join() === '4,0,3,1,2', mine.join());
+}
+
 /* ───────────── 14. 화면 쪽 ───────────── */
 {
   const fs = require('fs');

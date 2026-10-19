@@ -262,11 +262,19 @@ function arrange(items, order, noSpace) {
   return idx;
 }
 
+/* 0 … n-1을 한 번씩 담은 순서인가. 선지 수가 바뀌어 맞지 않으면 손으로 정한 순서는 버린다 */
+function isPerm(a, n) {
+  if (!Array.isArray(a) || a.length !== n) return false;
+  const seen = new Set(a);
+  return seen.size === n && a.every(v => Number.isInteger(v) && v >= 0 && v < n);
+}
+
 /* ───────────── 결과 만들기 ─────────────
    opts: order(orig|len|lenDesc|abc|abcDesc|headLen|headLenDesc)
          mark(keep|circle|kor|num|paren|hangul|bullet|none)
          layout(keep|1~5) sep(keep|sp1|tab|tab2|sp2|sp4) trim noSpace
-         join: 쪼개져 들어온 선지를 한 줄로 도로 잇는다 */
+         join: 쪼개져 들어온 선지를 한 줄로 도로 잇는다
+         picked: 교사가 손으로 정한 순서 (자리마다 놓을 선지 번호). 있으면 order 대신 쓴다 */
 const DEFAULTS = { order: 'len', mark: 'keep', layout: 'keep', sep: 'tab', trim: true, noSpace: false, join: true };
 
 // 선지에 딸린 줄은 그 선지가 놓인 줄 바로 아래에 붙여 둔다
@@ -279,7 +287,7 @@ function rearrange(text, opts) {
   if (!parsed) return { ok: false, reason: 'no-items' };
 
   const items = parsed.items.map(s => o.trim ? s.trim() : s);
-  const picked = arrange(items, o.order, o.noSpace);
+  const picked = isPerm(o.picked, items.length) ? o.picked.slice() : arrange(items, o.order, o.noSpace);
 
   const slots = [];
   parsed.rows.forEach(row => { if (row.cells) row.cells.forEach(c => slots.push(c)); });
