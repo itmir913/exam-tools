@@ -39,6 +39,37 @@
             overflow-wrap: break-word;
         }
 
+        /* 유리 양식 (TUK 프롬프트 갤러리와 같은 색 덩어리).
+           덩어리를 쪽 전체 뒤에 깔아 두어야 카드와 바닥글의 반투명 유리 너머로 색이 비친다 */
+        @keyframes ambient-drift {
+            0% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(5%, 5%) scale(1.05); }
+            66% { transform: translate(-5%, 2%) scale(0.95); }
+            100% { transform: translate(0, 0) scale(1); }
+        }
+        .ambient {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .ambient-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.55;
+            animation: ambient-drift 15s infinite ease-in-out alternate;
+        }
+        /* 좁은 화면에서도 덩어리가 너무 작아지지 않게 최소 크기를 둔다 */
+        .blob-1 { top: -20%; left: 0; width: max(50vw, 420px); height: max(50vw, 420px); background: #c896ff; }
+        .blob-2 { top: -10%; right: 0; width: max(40vw, 340px); height: max(40vw, 340px); background: #7ca6f2; animation-delay: -5s; }
+        .blob-3 { bottom: -10%; left: 10%; width: max(60vw, 480px); height: max(60vw, 480px); background: #ffbfa1; animation-delay: -10s; }
+        [data-theme="dark"] .ambient-blob { opacity: 0.3; }
+        @media (prefers-reduced-motion: reduce) {
+            .ambient-blob { animation: none; }
+        }
+
         /* Theme toggle: show the icon of the theme you would switch to */
         .theme-toggle .icon-sun {
             display: none;
@@ -51,28 +82,34 @@
         }
     </style>
 </head>
-<!-- Teacher Utility Kit의 하위 쪽(teacher-tools 등)과 같은 양식이다.
+<!-- Teacher Utility Kit의 하위 쪽과 같은 양식이다 (프롬프트 갤러리의 유리 양식).
      TUK 홈의 카드에서 이 쪽으로 들어오고, 머리의 배지와 바닥글로 TUK 홈에 돌아간다. -->
-<body class="bg-slate-50 dark:bg-black text-slate-800 dark:text-[#f5f5f7] min-h-screen flex flex-col selection:bg-indigo-600 selection:text-white">
+<body class="bg-slate-50 dark:bg-black text-slate-700 dark:text-[#f5f5f7] min-h-screen flex flex-col relative isolate selection:bg-indigo-700 selection:text-white">
+
+<div class="ambient" aria-hidden="true">
+    <div class="ambient-blob blob-1"></div>
+    <div class="ambient-blob blob-2"></div>
+    <div class="ambient-blob blob-3"></div>
+</div>
 
 <!-- ░░ HERO ░░ -->
-<header class="relative bg-white dark:bg-[#1c1c1e] border-b border-slate-200 dark:border-[#333336] py-24 px-4 text-center">
+<header class="relative min-h-[420px] flex flex-col items-center justify-center px-4 py-24 text-center">
     <button type="button" id="theme-toggle" aria-label="Switch to dark mode"
             class="theme-toggle absolute top-5 right-5 md:top-6 md:right-6 z-20 w-10 h-10 flex items-center justify-center rounded-full
-                   border border-slate-200 bg-white/60 backdrop-blur text-slate-500 hover:text-slate-800
-                   dark:border-[#333336] dark:bg-[#1c1c1e]/60 dark:text-[#a1a1a6] dark:hover:text-[#f5f5f7]
+                   border border-slate-200/60 bg-white/40 backdrop-blur text-slate-500 hover:text-slate-800
+                   dark:border-[#333336]/60 dark:bg-[#1c1c1e]/40 dark:text-[#a1a1a6] dark:hover:text-[#f5f5f7]
                    transition-colors duration-300">
         <i class="icon-moon fa-solid fa-moon"></i>
         <i class="icon-sun fa-solid fa-sun"></i>
     </button>
-    <div class="max-w-screen-xl mx-auto">
-        <a href="https://luminousky.com/teacher-utility-kit/" class="inline-block mb-4 px-4 py-2 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/30 text-indigo-600 dark:text-indigo-400 rounded-full text-base font-bold tracking-wide [@media(hover:hover)]:hover:bg-indigo-100 dark:[@media(hover:hover)]:hover:bg-indigo-500/20 active:bg-indigo-100 dark:active:bg-indigo-500/20 no-underline transition [-webkit-tap-highlight-color:transparent] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
+    <div class="relative z-10 max-w-4xl mx-auto">
+        <a href="https://luminousky.com/teacher-utility-kit/" class="inline-block mb-4 px-4 py-2 bg-white/20 dark:bg-white/5 backdrop-blur-sm border border-white/40 dark:border-white/10 text-indigo-600 dark:text-indigo-400 rounded-full text-base font-bold tracking-wide [@media(hover:hover)]:hover:bg-white/40 dark:[@media(hover:hover)]:hover:bg-white/10 active:bg-white/40 dark:active:bg-white/10 no-underline transition [-webkit-tap-highlight-color:transparent] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
             Teacher Utility Kit
         </a>
-        <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-8 text-slate-900 dark:text-[#f5f5f7]">
+        <h1 class="text-5xl md:text-7xl font-semibold tracking-tighter mb-5 text-slate-800 dark:text-[#f5f5f7]">
             지필평가 도구
         </h1>
-        <p class="text-xl md:text-2xl text-slate-600 dark:text-[#a1a1a6] max-w-3xl mx-auto leading-relaxed font-medium">
+        <p class="text-xl md:text-2xl text-slate-500 dark:text-[#a1a1a6] font-medium max-w-2xl mx-auto leading-relaxed">
             지필평가 문항을 낼 때 손이 많이 가는 계산과 정리를<br class="hidden md:block">
             브라우저에서 바로 끝내는 도구 모음입니다.
         </p>
@@ -80,23 +117,31 @@
 </header>
 
 <!-- ░░ MAIN ░░ -->
-<main class="flex-grow max-w-screen-xl mx-auto px-4 py-20 w-full">
+<main class="flex-grow max-w-6xl mx-auto px-4 pt-8 pb-32 w-full">
 
     <section id="tools" class="scroll-mt-12">
-        <div class="mb-12 border-l-4 border-indigo-600 pl-4">
-            <h2 class="text-3xl font-bold text-slate-900 dark:text-[#f5f5f7] mb-4">도구</h2>
-            <p class="text-lg text-slate-600 dark:text-[#a1a1a6] font-medium">설치 없이 브라우저에서 열어 씁니다. 입력한 내용은 이 브라우저 밖으로 나가지 않습니다.</p>
+        <div class="flex items-center gap-3 mb-3">
+            <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-100/80 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-400">
+                <i class="fa-solid fa-toolbox text-base"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-slate-800 dark:text-[#f5f5f7] tracking-tight">도구</h2>
         </div>
+        <p class="text-base text-slate-500 dark:text-[#a1a1a6] mb-10 ml-11 leading-relaxed">
+            설치 없이 브라우저에서 열어 씁니다. 입력한 내용은 이 브라우저 밖으로 나가지 않습니다.
+        </p>
 
         <!-- 도구를 더하면 카드를 여기에 한 장 더 적는다 -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
 
             <a href="./create-points/"
-               class="group flex flex-col bg-white dark:bg-[#1c1c1e] p-8 rounded-2xl border border-slate-200 dark:border-[#333336] shadow-sm
-                      hover:shadow-md hover:border-slate-300 dark:hover:border-[#48484a] no-underline transition-all
+               class="group flex flex-col p-8 rounded-3xl no-underline transition-all duration-300
+                      bg-white/60 dark:bg-[#1c1c1e]/50 backdrop-blur-xl border border-white/70 dark:border-white/10
+                      shadow-[0_8px_32px_-12px_rgba(76,61,140,0.25)] dark:shadow-[0_8px_32px_-12px_rgba(0,0,0,0.6)]
+                      hover:bg-white/80 dark:hover:bg-[#1c1c1e]/70 hover:-translate-y-0.5
+                      hover:shadow-[0_16px_40px_-12px_rgba(76,61,140,0.35)] dark:hover:shadow-[0_16px_40px_-12px_rgba(0,0,0,0.7)]
                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
                 <div class="flex items-center gap-5 mb-6">
-                    <div class="shrink-0 w-16 h-16 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center text-3xl shadow-inner">
+                    <div class="shrink-0 w-16 h-16 bg-blue-50/80 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center text-3xl ring-1 ring-blue-100 dark:ring-blue-400/20">
                         <i class="fa-solid fa-scale-balanced"></i>
                     </div>
                     <div>
@@ -114,11 +159,14 @@
             </a>
 
             <a href="./choice-order/"
-               class="group flex flex-col bg-white dark:bg-[#1c1c1e] p-8 rounded-2xl border border-slate-200 dark:border-[#333336] shadow-sm
-                      hover:shadow-md hover:border-slate-300 dark:hover:border-[#48484a] no-underline transition-all
+               class="group flex flex-col p-8 rounded-3xl no-underline transition-all duration-300
+                      bg-white/60 dark:bg-[#1c1c1e]/50 backdrop-blur-xl border border-white/70 dark:border-white/10
+                      shadow-[0_8px_32px_-12px_rgba(76,61,140,0.25)] dark:shadow-[0_8px_32px_-12px_rgba(0,0,0,0.6)]
+                      hover:bg-white/80 dark:hover:bg-[#1c1c1e]/70 hover:-translate-y-0.5
+                      hover:shadow-[0_16px_40px_-12px_rgba(76,61,140,0.35)] dark:hover:shadow-[0_16px_40px_-12px_rgba(0,0,0,0.7)]
                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
                 <div class="flex items-center gap-5 mb-6">
-                    <div class="shrink-0 w-16 h-16 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-2xl flex items-center justify-center text-3xl shadow-inner">
+                    <div class="shrink-0 w-16 h-16 bg-indigo-50/80 dark:bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 rounded-2xl flex items-center justify-center text-3xl ring-1 ring-indigo-100 dark:ring-indigo-400/20">
                         <i class="fa-solid fa-arrow-down-short-wide"></i>
                     </div>
                     <div>
@@ -141,18 +189,18 @@
 </main>
 
 <!-- ░░ FOOTER ░░ -->
-<footer class="py-8 border-t border-slate-200 dark:border-[#333336] bg-white dark:bg-[#1c1c1e] mt-auto">
+<footer class="py-8 mt-auto border-t border-white/60 dark:border-white/10 bg-white/40 dark:bg-[#1c1c1e]/40 backdrop-blur-xl">
     <div class="max-w-6xl mx-auto px-4 flex flex-col items-center gap-3">
         <a href="https://luminousky.com/teacher-utility-kit/"
-           class="text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors text-base">
+           class="text-slate-500 dark:text-[#a1a1a6] hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors text-base">
             &larr; Teacher Utility Kit 홈으로 돌아가기
         </a>
         <a href="https://github.com/itmir913/exam-tools"
            target="_blank" rel="noopener noreferrer"
-           class="text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors text-base">
+           class="text-slate-500 dark:text-[#a1a1a6] hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors text-base">
             <i class="fa-brands fa-github mr-1"></i> GitHub 저장소
         </a>
-        <p class="text-base font-medium text-slate-400 tracking-tight">
+        <p class="text-base font-medium text-slate-500 dark:text-[#a1a1a6] tracking-tight">
             &copy; 2026 luminousky.com. All rights reserved.
         </p>
     </div>
