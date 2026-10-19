@@ -47,5 +47,4 @@ Tailwind·글꼴·아이콘은 CDN이 아니라 빌드에 담는다 (`npm run bu
 - 저장소 전체에 걸친 규칙·스크립트·워크플로는 `.github/` 아래에 둔다.
 - `node_modules/`와 `dist/`는 커밋하지 않는다. 빌드 설정(`vite.config.mjs`,
   `tailwind.config.mjs`, `postcss.config.mjs`, `build.mjs`)은 뿌리에 둔다.
-- `manifest.json`은 커밋하지 않는다. 배포할 때 Actions가
-  `.github/scripts/build_manifest.py`로 새로 만든다.
+- 랜딩(`index.html`)의 도구 카드는 쪽에 직접 적는다. 도구를 더하면 카드도 더한다.

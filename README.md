@@ -32,9 +32,7 @@ npm install
 npm run dev
 ```
 
-랜딩(`index.html`)은 `manifest.json`을 읽어 카드를 그립니다. 이 파일은 커밋하지 않지만,
-개발 서버가 요청을 받을 때마다 `.github/scripts/build_manifest.py`로 새로 만들어 주므로
-따로 돌릴 필요가 없습니다 (Python이 필요합니다).
+랜딩(`index.html`)의 도구 카드는 쪽에 직접 적혀 있습니다. 도구를 더하면 카드도 한 장 더 적습니다.
 
 ## 검사와 빌드
 

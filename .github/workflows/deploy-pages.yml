@@ -64,9 +64,6 @@ jobs:
       - name: Build site
         run: npm run build
 
-      - name: Build manifest
-        run: python3 .github/scripts/build_manifest.py dist
-
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:
