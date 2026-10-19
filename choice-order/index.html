@@ -123,7 +123,6 @@
         <div class="block-head">
           <h2>정렬 결과</h2>
           <span class="spacer">
-            <span id="customMsg" class="meta hidden">순서를 직접 조정했습니다.</span>
             <button id="resetBtn" type="button" class="btn hidden">자동 정렬로 되돌리기</button>
           </span>
         </div>
@@ -257,9 +256,8 @@ function render() {
   }).join('');
 }
 
-// 손으로 순서를 바꾼 동안에는 그렇다고 알리고 되돌릴 단추를 보인다
+// 손으로 순서를 바꾼 동안에만 되돌릴 단추를 보인다. 단추가 보이는 것으로 손댄 줄 안다
 function showCustom(on) {
-  $('customMsg').classList.toggle('hidden', !on);
   $('resetBtn').classList.toggle('hidden', !on);
 }
 
