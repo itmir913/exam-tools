@@ -1,7 +1,11 @@
 /* 세 쪽(랜딩과 두 도구)이 함께 쓰는 바탕.
  * 글꼴은 CDN이 아니라 저장소가 받아 둔 것을 쓴다 - 내려받은 zip을 인터넷 없이 열어도
- * 같은 글꼴로 보여야 한다. */
-@import 'pretendard/dist/web/variable/pretendardvariable.css';
+ * 같은 글꼴로 보여야 한다.
+ *
+ * 쪼개 둔 Pretendard(동적 서브셋)를 쓴다. 브라우저는 쪽에 실제로 나온 글자가 든
+ * 조각만 받으므로 사이트는 가볍고, zip에는 92개 조각이 모두 assets/에 담겨
+ * 인터넷 없이도 글꼴이 빠지지 않는다. */
+@import 'pretendard/dist/web/variable/pretendardvariable-dynamic-subset.css';
 
 @tailwind base;
 @tailwind components;
