@@ -81,7 +81,7 @@
     </details>
 
     <div class="actions">
-      <span class="push"><span id="staleMsg" class="stale hidden">조건이 바뀌었습니다</span><button id="runBtn" type="button" class="btn primary big">계산</button></span>
+      <span class="push"><span id="staleMsg" class="stale hidden">배점 생성 조건이 변경되어 재계산이 필요합니다.</span><button id="runBtn" type="button" class="btn primary big">계산</button></span>
     </div>
   </section>
 
@@ -291,7 +291,7 @@ async function calculate() {
     if (my === runId) {
       btn.textContent = '계산';
       btn.disabled = false;
-      $('staleMsg').textContent = '조건이 바뀌었습니다';
+      $('staleMsg').textContent = '배점 생성 조건이 변경되어 재계산이 필요합니다.';
       $('staleMsg').classList.add('hidden');
       $('resultSec').classList.remove('is-stale', 'is-busy');
       $('resultSec').removeAttribute('aria-busy');
@@ -698,7 +698,7 @@ function moveView(d) {
   if (!k) return;
   state.view = k.kinds;
   setKinds(k.kinds === best ? 0 : k.kinds, best);
-  // 이미 계산해 둔 가지수로 옮긴 것이므로 "조건이 바뀌었습니다"로 치지 않는다
+  // 이미 계산해 둔 가지수로 옮긴 것이므로 "조건이 변경되었다"고 치지 않는다
   state.calculated = snapshot();
   render();
 }
