@@ -10,6 +10,7 @@
   --ink: #1c1b1a;
   --muted: #6b6862;
   --line: #e4e1da;
+  --card-line: #e4e1da;    /* 카드 테두리 */
   --line-strong: #cfcbc1;
   --accent: #3b4cca;       /* 단 하나의 포인트 색 */
   --accent-ink: #ffffff;
@@ -24,7 +25,7 @@
 :root[data-theme="dark"] {
   color-scheme: dark;
   --bg: #121214; --panel: #1b1b1e; --ink: #ecebe8; --muted: #a09d96;
-  --line: #2b2b2f; --line-strong: #3b3b41;
+  --line: #34343a; --card-line: #4d4d57; --line-strong: #5f5f6b;
   --accent: #8c9bff; --accent-ink: #11122a; --accent-soft: #23253f;
   --warn: #f0b860; --warn-soft: #34290f;
   --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px -12px rgba(0, 0, 0, .6);
@@ -71,7 +72,7 @@ body {
 .layout { display: grid; gap: 1.5rem; grid-template-columns: 22rem minmax(0, 1fr); align-items: start; }
 @media (max-width: 62rem) { .layout { grid-template-columns: minmax(0, 1fr); } }
 
-.panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+.panel { background: var(--panel); border: 1px solid var(--card-line); border-radius: var(--radius); box-shadow: var(--shadow); }
 .settings { padding: 1.5rem; display: grid; gap: 1.5rem; position: sticky; top: 1rem; }
 @media (max-width: 62rem) { .settings { position: static; } }
 .group h2 { margin: 0 0 .6rem; font-size: 1rem; font-weight: 700; }
