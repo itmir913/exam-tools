@@ -17,7 +17,6 @@
   --accent-soft: #eceefc;
   --warn: #b26a00;
   --warn-soft: #fbf0dc;
-  --ok: #2e9d6b;
   --radius: 14px;
   --shadow: 0 1px 2px rgba(28, 27, 26, .04), 0 8px 24px -12px rgba(28, 27, 26, .12);
 }
@@ -46,7 +45,7 @@ body {
 /* 머리 */
 .top { position: relative; margin-bottom: 2rem; }
 .top h1 { margin: 0; font-size: 2rem; font-weight: 700; line-height: 1.2; letter-spacing: -.02em; }
-.lede { margin: .5rem 0 0; color: var(--muted); max-width: 40rem; }
+.lede { margin: .5rem 0 0; color: var(--muted); max-width: 44rem; }
 .crumb {
   display: inline-block; margin-bottom: .9rem; padding: .3rem .9rem; border-radius: 999px; text-decoration: none;
   font-weight: 700; color: var(--accent); background: var(--accent-soft); border: 1px solid transparent;
@@ -54,8 +53,6 @@ body {
 }
 .crumb:hover { border-color: var(--accent); }
 .top-meta { display: flex; align-items: center; flex-wrap: wrap; gap: .6rem 1.25rem; margin-top: 1.1rem; }
-.privacy { display: flex; align-items: center; gap: .5rem; margin: 0; color: var(--muted); }
-.dot { width: .55rem; height: .55rem; border-radius: 50%; background: var(--ok); }
 
 /* 테마 단추: 머리 오른쪽 위. 바꿨을 때 갈 테마의 아이콘을 보여 준다 */
 .theme-toggle {
