@@ -123,7 +123,7 @@
 </header>
 
 <!-- ░░ MAIN ░░ -->
-<main class="flex-grow max-w-5xl mx-auto px-4 pb-24 md:pb-32 w-full">
+<main class="flex-grow max-w-5xl mx-auto px-4 pb-20 md:pb-24 w-full">
 
     <section id="tools" aria-label="도구">
 
@@ -187,9 +187,11 @@
 </main>
 
 <!-- ░░ FOOTER ░░ -->
-<!-- 테두리나 배경 띠를 두지 않는다. 유리 배경 위에서는 그 경계가 선처럼 쪽을 끊는다 -->
-<footer class="mt-auto pb-12 pt-4">
+<!-- 쪽 끝까지 닿는 테두리나 배경 띠는 유리 배경을 칼로 자른 듯 끊는다.
+     카드 폭 안에서 양 끝이 흐려지는 가는 선으로만 본문과 나눈다 -->
+<footer class="mt-auto pb-12">
     <div class="max-w-5xl mx-auto px-4 flex flex-col items-center gap-4">
+        <div class="w-full h-px mb-6 bg-gradient-to-r from-transparent via-slate-300 to-transparent dark:via-white/20" aria-hidden="true"></div>
         <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2" aria-label="외부 링크">
             <a href="https://luminousky.com/teacher-utility-kit/"
                class="inline-flex items-center gap-2 text-slate-500 dark:text-[#a1a1a6] hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors text-base">
