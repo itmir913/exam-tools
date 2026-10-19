@@ -186,9 +186,10 @@ function render() {
   const headBox = $('headMsg');
   if (state.order === 'headLen' || state.order === 'headLenDesc') {
     const info = X.headInfo(r.items);
+    const desc = state.order === 'headLenDesc';
     headBox.textContent = info.ok
-      ? '머리말 ' + info.kinds.slice(0, 6).join(' · ') + ' 로 묶은 뒤, 묶음 안에서 짧은 순으로 늘어놓았습니다.'
-      : '앞머리에 (가)나 A. 같은 머리말이 없어 묶을 것이 없습니다. 짧은 순과 같은 결과입니다.';
+      ? '머리말 ' + info.kinds.slice(0, 6).join(' · ') + ' 로 묶은 뒤, 묶음 안에서 ' + (desc ? '긴' : '짧은') + ' 순으로 늘어놓았습니다.'
+      : '앞머리에 (가)나 A. 같은 머리말이 없어 묶을 것이 없습니다. ' + (desc ? '긴' : '짧은') + ' 순과 같은 결과입니다.';
     headBox.classList.remove('hidden');
   } else {
     headBox.classList.add('hidden');

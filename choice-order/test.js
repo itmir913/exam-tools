@@ -295,6 +295,22 @@ for (const c of CASES) {
   const plain = CASES.find(c => c.name === '번호 없는 줄').text;
   check('머리말이 없으면 길이순과 같다',
     X.rearrange(plain, { order: 'headLen' }).out === X.rearrange(plain, { order: 'len' }).out);
+  check('머리말이 없으면 긴 순과 같다',
+    X.rearrange(plain, { order: 'headLenDesc' }).out === X.rearrange(plain, { order: 'lenDesc' }).out);
+}
+
+/* ───────────── 7-1. 길이가 같으면 사전순 ───────────── */
+{
+  const t = '① 나다\t② 가다\t③ 가나\t④ 다라마';
+  check('짧은 순: 길이가 같으면 사전순',
+    X.rearrange(t, { order: 'len' }).placed.join('|') === '가나|가다|나다|다라마');
+  check('긴 순: 길이가 같으면 사전순',
+    X.rearrange(t, { order: 'lenDesc' }).placed.join('|') === '다라마|가나|가다|나다');
+  const h = '① (가) 바나\n② (가) 가다\n③ (나) 하하\n④ (나) 가가\n⑤ (나) 가가가';
+  check('머리말 묶음 → 짧은 순: 길이가 같으면 사전순',
+    X.rearrange(h, { order: 'headLen' }).placed.join('|') === '(가) 가다|(가) 바나|(나) 가가|(나) 하하|(나) 가가가');
+  check('머리말 묶음 → 긴 순: 길이가 같으면 사전순',
+    X.rearrange(h, { order: 'headLenDesc' }).placed.join('|') === '(가) 가다|(가) 바나|(나) 가가가|(나) 가가|(나) 하하');
 }
 
 /* ───────────── 8. 다시 배치하기 ───────────── */
