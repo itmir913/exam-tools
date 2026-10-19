@@ -55,9 +55,9 @@
       <label class="f"><span>배점 가지수</span><input id="kinds" type="number" min="1" step="1" placeholder="자동" aria-label="배점 가지수 (비우면 자동)" class="in"></label>
       <div class="f wide"><span class="lab">난이도 비율 <span class="sub">(상 : 중 : 하)</span></span>
         <div class="ratio">
-          <input id="rHi" type="number" min="0" step="any" value="3" aria-label="상 비율" class="in"><b>:</b>
-          <input id="rMid" type="number" min="0" step="any" value="4" aria-label="중 비율" class="in"><b>:</b>
-          <input id="rLo" type="number" min="0" step="any" value="3" aria-label="하 비율" class="in">
+          <input id="rHi" type="number" min="0" step="any" value="30" aria-label="상 비율" class="in"><b>:</b>
+          <input id="rMid" type="number" min="0" step="any" value="40" aria-label="중 비율" class="in"><b>:</b>
+          <input id="rLo" type="number" min="0" step="any" value="30" aria-label="하 비율" class="in">
         </div>
       </div>
     </div>
@@ -137,7 +137,7 @@ const X = window.ExamPoints;
 const $ = id => document.getElementById(id);
 const TIER = ['상', '중', '하'];
 const TIER_CLS = { 상: 'badge hi', 중: 'badge mid', 하: 'badge lo' };
-const DEFAULT_RATIO = ['3', '4', '3'];
+const DEFAULT_RATIO = ['30', '40', '30'];
 const LOCK_ICON = {
   on: '<svg viewBox="0 0 20 20" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M6 8V6a4 4 0 1 1 8 0v2h1a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1h1Zm2 0h4V6a2 2 0 1 0-4 0v2Z"/></svg>',
   off: '<svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="4.8" y="8.8" width="10.4" height="8.4" rx=".8"/><path d="M7 8.8V6a3 3 0 0 1 5.8-1.1"/></svg>',
