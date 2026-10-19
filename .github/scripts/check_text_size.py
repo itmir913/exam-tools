@@ -16,6 +16,8 @@ ROOT = Path(__file__).resolve().parents[2]
 SMALL_CLASS = re.compile(r"\btext-(xs|sm)\b")
 FONT_SIZE = re.compile(r"font-size:\s*([\d.]+)(rem|em|px)")
 MIN_PX = 16.0
+# 빌드 도구가 두고 가는 폴더는 훑지 않는다 (dist는 여기 있는 쪽을 빌드한 것이다)
+SKIP = {"node_modules", "dist", "src"}
 
 
 def to_px(value: str, unit: str) -> float:
@@ -37,7 +39,7 @@ def check(path: Path) -> list[str]:
 def main() -> None:
     pages = sorted(
         p for p in [ROOT / "index.html", *ROOT.glob("*/index.html")]
-        if p.is_file() and not p.parent.name.startswith((".", "_"))
+        if p.is_file() and not p.parent.name.startswith((".", "_")) and p.parent.name not in SKIP
     )
     found = [hit for page in pages for hit in check(page)]
     if found:

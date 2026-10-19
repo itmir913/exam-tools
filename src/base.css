@@ -1,0 +1,8 @@
+/* 세 쪽(랜딩과 두 도구)이 함께 쓰는 바탕.
+ * 글꼴은 CDN이 아니라 저장소가 받아 둔 것을 쓴다 - 내려받은 zip을 인터넷 없이 열어도
+ * 같은 글꼴로 보여야 한다. */
+@import 'pretendard/dist/web/variable/pretendardvariable.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
