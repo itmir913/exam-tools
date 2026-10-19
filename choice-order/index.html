@@ -170,6 +170,7 @@ function setIdle(idle) {
     state.picked = [];
     state.custom = null;
     $('output').value = '';
+    $('output').style.height = '';
     showCustom(false);
     $('tbody').replaceChildren();
     $('copyMsg').textContent = '';
@@ -179,6 +180,16 @@ function setIdle(idle) {
 
 // 화면을 몇 번 새로 그렸는지. ▲▼가 잠금을 푸는 사이 다른 단추가 표를 다시 그렸는지 본다
 let drawn = 0;
+
+/* 결과 칸을 글에 맞춰 늘인다. 줄 수만 맞추면 긴 줄의 가로 스크롤 막대가 높이를 먹어
+   (Windows처럼 막대가 자리를 차지하는 곳에서) 아래가 잘리고 세로 스크롤이 생긴다 */
+function fitOutput() {
+  const out = $('output');
+  out.style.height = '';
+  if (out.value === '') return;
+  out.style.height = out.scrollHeight + (out.offsetHeight - out.clientHeight) + 'px';
+}
+window.addEventListener('resize', fitOutput);
 
 function render() {
   drawn++;
@@ -231,6 +242,7 @@ function render() {
   const out = $('output');
   out.value = r.out;
   out.rows = Math.max(3, r.out.split('\n').length);
+  fitOutput();
   setIdle(false);
   $('copyMsg').textContent = '';
   $('rowMsg').textContent = ROW_HINT;
