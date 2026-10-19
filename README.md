@@ -7,6 +7,9 @@
 
 ## 도구
 
+각 도구 쪽에는 오프라인 zip을 받는 링크가 있습니다. 인터넷이 없는 교무실 PC에서도
+풀어서 `index.html`을 열면 그대로 돌아갑니다 (글꼴과 스타일까지 zip 안에 들어 있습니다).
+
 ### [배점 생성기](https://luminousky.com/exam-tools/exam-points/) — `exam-points/`
 
 총점과 문항 수를 넣으면 배점별 문항 수를 자동으로 나눕니다. 배점 종류를 최대한 늘려
@@ -21,10 +24,12 @@
 
 ## 로컬에서 보기
 
-저장소 뿌리에서 정적 서버를 띄우면 배포된 주소와 같은 구조로 열립니다.
+Tailwind CSS를 빌드해 쓰므로 Vite 개발 서버로 엽니다. 세 쪽(랜딩과 두 도구)이 한
+서버에 올라오고, 고친 자리는 바로 화면에 반영됩니다.
 
 ```bash
-python -m http.server 8765
+npm install
+npm run dev
 ```
 
 랜딩(`index.html`)은 `manifest.json`을 읽어 카드를 그립니다. 이 파일은 커밋하지 않으므로,
@@ -34,9 +39,20 @@ python -m http.server 8765
 python .github/scripts/build_manifest.py
 ```
 
+배포될 모습 그대로 보려면 빌드한 뒤 띄웁니다. 결과는 `dist/`에 쌓입니다.
+
+```bash
+npm run build
+npm run preview
+```
+
 ## 테스트
 
 도구마다 의존성 없는 node 테스트가 있습니다.
+
+```bash
+npm test
+```
 
 ```bash
 node exam-points/test.js
@@ -49,9 +65,22 @@ node choice-order/test.js
 python .github/scripts/check_text_size.py
 ```
 
+## 빌드
+
+`npm run build`(= `node build.mjs`)가 Vite로 세 쪽을 각각 빌드해 `dist/`에 모읍니다.
+도구마다 따로 빌드하는 이유는 그 도구가 쓰는 CSS와 글꼴이 **그 폴더 안에** 들어가야
+하기 때문입니다. 그래야 `dist/exam-points/` 하나만 묶어도 인터넷 없이 열리는 zip이
+됩니다. 주소는 모두 상대 주소(`base: './'`)라 같은 빌드가 Pages에서도, 파일로 열어도
+그대로 뜹니다.
+
+솔버·정렬기처럼 브라우저가 이름 그대로 읽는 파일(`solver.js`, `worker.js`,
+`precalc.json`, `sorter.js`)은 묶지 않고 그대로 옮깁니다. `build.mjs`의 `RUNTIME`
+목록이 그 명단입니다.
+
 ## 배포
 
 `main`에 push하면 GitHub Actions(`.github/workflows/deploy-pages.yml`)가 검사와 테스트를
-돌리고, `manifest.json`을 만들어 저장소 뿌리를 그대로 GitHub Pages에 올립니다.
-하나라도 실패하면 사이트는 그대로 둡니다. 저장소 설정은 Settings → Pages → Source:
-GitHub Actions 입니다.
+돌리고, 빌드한 `dist/`를 GitHub Pages에 올립니다. 같은 실행에서 도구 폴더마다
+`exam-points.zip`·`choice-order.zip`을 만들어 `latest` 릴리스에 갱신합니다 - 사이트와
+내려받는 zip이 늘 같은 커밋을 가리킵니다. 하나라도 실패하면 사이트도 zip도 그대로
+둡니다. 저장소 설정은 Settings → Pages → Source: GitHub Actions 입니다.

@@ -1,8 +1,13 @@
-# GitHub Pages 배포.
+# GitHub Pages 배포와 릴리스 갱신.
 #
-# main에 push할 때마다 하위 폴더 목록(manifest.json)을 새로 만들어
-# 사이트와 함께 올린다. manifest.json은 배포 산출물에만 들어가고
-# 저장소에는 커밋하지 않는다.
+# main에 push할 때마다 사이트를 빌드해 올리고, 같은 실행에서 도구마다 zip을 만들어
+# latest 릴리스에 갱신한다. 두 일을 한 워크플로에 둔 이유는 둘이 같은 것을 배포하기
+# 때문이다. 따로 두면 사이트와 내려받는 zip이 서로 다른 커밋을 가리키는 때가 생긴다.
+# release 잡은 deploy 잡이 성공해야 돌아간다 - 배포가 실패했는데 zip만 새것으로
+# 바뀌는 상황을 막는다.
+#
+# 올리는 것은 저장소 뿌리가 아니라 빌드 결과(dist)다. 도구 폴더마다 쓰는 CSS와
+# 글꼴이 그 폴더 안에 들어 있어, 폴더 하나만 받아도 인터넷 없이 열린다.
 #
 # 저장소 설정이 Settings → Pages → Source: GitHub Actions 여야 한다.
 
@@ -38,6 +43,15 @@ jobs:
       - name: Configure Pages
         uses: actions/configure-pages@v6
 
+      - name: Set up Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
       # 배포 전에 검사한다. 하나라도 걸리면 사이트는 그대로 둔다
       - name: Check text size
         run: python3 .github/scripts/check_text_size.py
@@ -48,15 +62,65 @@ jobs:
       - name: Test choice-order sorter
         run: node choice-order/test.js
 
-      - name: Build manifest
-        run: python3 .github/scripts/build_manifest.py
+      - name: Build site
+        run: npm run build
 
-      # 저장소 뿌리를 그대로 올린다. .git과 .github는 업로드에서 빠진다.
+      - name: Build manifest
+        run: python3 .github/scripts/build_manifest.py dist
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v5
         with:
-          path: '.'
+          path: dist
+
+      # release 잡이 같은 빌드를 그대로 묶도록 넘긴다 (다시 빌드하지 않는다)
+      - name: Hand the build to the release job
+        uses: actions/upload-artifact@v5
+        with:
+          name: site
+          path: dist
 
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v5
+
+  release:
+    name: Update latest release
+    needs: deploy          # 배포가 성공한 뒤에만 올린다
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write      # 릴리스를 만들고 갱신하는 데 필요하다
+
+    steps:
+      - name: Download the build
+        uses: actions/download-artifact@v6
+        with:
+          name: site
+          path: dist
+
+      - name: Zip each tool folder individually
+        working-directory: dist
+        run: |
+          for dir in */; do
+            dir_name="${dir%/}"
+
+            # 도구는 제 index.html을 가진 폴더다. 랜딩이 쓰는 assets 같은
+            # 곁딸린 폴더는 내려받을 것이 아니므로 건너뛴다.
+            if [[ ! -f "$dir_name/index.html" ]]; then
+              continue
+            fi
+
+            echo "Zipping folder: $dir_name -> $dir_name.zip"
+            (cd "$dir_name" && zip -r "../../${dir_name}.zip" .)
+          done
+
+      - name: Upload zips to latest release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: "latest"
+          artifacts: "*.zip"
+          allowUpdates: true          # 기존 latest 릴리스를 갱신한다
+          replacesArtifacts: true     # 옛 zip을 새것으로 바꾼다
+          omitName: true              # 릴리스 제목을 덮어쓰지 않는다
+          omitBody: true              # 릴리스 본문을 덮어쓰지 않는다
+          token: ${{ secrets.GITHUB_TOKEN }}
