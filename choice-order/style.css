@@ -43,7 +43,7 @@ body {
 .wrap { max-width: 80rem; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
 
 /* 머리 */
-.top { position: relative; margin-bottom: 2rem; }
+.top { position: relative; margin-bottom: 1.5rem; }
 .top h1 { margin: 0; font-size: 2rem; font-weight: 700; line-height: 1.2; letter-spacing: -.02em; }
 .lede { margin: .5rem 0 0; color: var(--muted); max-width: 44rem; }
 .crumb {
