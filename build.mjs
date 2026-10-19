@@ -1,7 +1,7 @@
 /* 세 쪽을 각각 빌드해 dist/에 모은다.
  *
  *   dist/index.html            랜딩
- *   dist/exam-points/          배점 생성기 (이 폴더만으로 완결된다)
+ *   dist/create-points/          지필평가 배점 생성기 (이 폴더만으로 완결된다)
  *   dist/choice-order/         지필평가 선택지 정렬기 (같다)
  *
  * 폴더마다 따로 빌드하는 이유는 글꼴·CSS 같은 산출물이 그 폴더 안에 들어가야
@@ -22,7 +22,7 @@ const CONFIG = resolve(ROOT, 'vite.config.mjs');
 // 도구가 브라우저에서 이름 그대로 읽는 파일들. 고전 <script>와 Worker의
 // importScripts, fetch가 이름으로 찾으므로 묶지 않고 그대로 옮긴다.
 const RUNTIME = {
-  'exam-points': ['solver.js', 'worker.js', 'precalc.json'],
+  'create-points': ['solver.js', 'worker.js', 'precalc.json'],
   'choice-order': ['sorter.js'],
 };
 

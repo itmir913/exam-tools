@@ -3,7 +3,7 @@
  * 100점 만점, 배점 간격 0.1·0.5점, 10~40문항을 기본 조건(solver.js의 defaultsFor)으로 풀어
  * 배점 종류 수마다 가장 좋은 해를 담는다. 화면은 입력이 이 조건과 같으면 탐색 없이 이 결과를 쓴다.
  * solver.js의 탐색 방식이나 기본 조건을 바꾸면 다시 만들어 커밋한다:
- *   node exam-points/precalc.js
+ *   node create-points/precalc.js
  */
 const fs = require('fs');
 const path = require('path');

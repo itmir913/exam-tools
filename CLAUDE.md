@@ -43,7 +43,7 @@ Tailwind·글꼴·아이콘은 CDN이 아니라 빌드에 담는다 (`npm run bu
 
 ## 파일 두는 자리
 
-- 도구 전용 파일은 그 도구 폴더 안에 둔다 (`exam-points/`, `choice-order/`).
+- 도구 전용 파일은 그 도구 폴더 안에 둔다 (`create-points/`, `choice-order/`).
 - 저장소 전체에 걸친 규칙·스크립트·워크플로는 `.github/` 아래에 둔다.
 - `node_modules/`와 `dist/`는 커밋하지 않는다. 빌드 설정(`vite.config.mjs`,
   `tailwind.config.mjs`, `postcss.config.mjs`, `build.mjs`)은 뿌리에 둔다.

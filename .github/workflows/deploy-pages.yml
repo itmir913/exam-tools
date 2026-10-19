@@ -56,8 +56,8 @@ jobs:
       - name: Check text size
         run: python3 .github/scripts/check_text_size.py
 
-      - name: Test exam-points solver
-        run: node exam-points/test.js
+      - name: Test create-points solver
+        run: node create-points/test.js
 
       - name: Test choice-order sorter
         run: node choice-order/test.js

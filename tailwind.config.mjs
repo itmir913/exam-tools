@@ -1,10 +1,10 @@
-/** 세 쪽(랜딩·배점 생성기·선택지 정렬기)이 한 설정을 함께 쓴다.
+/** 세 쪽(랜딩·지필평가 배점 생성기·선택지 정렬기)이 한 설정을 함께 쓴다.
  *  두 도구는 같은 양식(남색 머리글 + 흰 칸 + 얇은 괘선)이라 색 이름도 같다.
  *  CDN tailwind를 쓸 때 각 index.html에 적어 두었던 설정을 그대로 옮긴 것이다. */
 export default {
   content: [
     './index.html',
-    './exam-points/**/*.{html,js}',
+    './create-points/**/*.{html,js}',
     './choice-order/**/*.{html,js}',
   ],
   // 랜딩은 html[data-theme="dark"]로 밤 하늘을 켠다

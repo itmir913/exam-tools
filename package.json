@@ -5,7 +5,7 @@
     "dev": "vite",
     "build": "node build.mjs",
     "preview": "vite preview --outDir dist",
-    "test": "node exam-points/test.js && node choice-order/test.js"
+    "test": "node create-points/test.js && node choice-order/test.js"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-free": "^6.7.2",

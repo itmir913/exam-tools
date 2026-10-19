@@ -1,6 +1,6 @@
 /* solver.js가 내놓은 해가 조건을 모두 지키는지 검사한다.
  * 탐색 방식을 고친 뒤에는 꼭 돌려 본다:
- *   node exam-points/test.js
+ *   node create-points/test.js
  */
 const X = require('./solver.js');
 const precalc = require('./precalc.json');
