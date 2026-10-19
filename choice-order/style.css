@@ -1,2 +1,128 @@
-/* 지필평가 선택지 정렬기의 스타일시트. 빌드하면 이 폴더 안에 자리 잡아 폴더만 내려받아도 그대로 뜬다. */
+/* 지필평가 선택지 정렬기의 스타일시트. 빌드하면 이 폴더 안에 자리 잡아 폴더만 내려받아도 그대로 뜬다.
+ * 화면 모양은 이 도구만의 것이라 여기에 모두 둔다 (배점 생성기와 맞추지 않는다).
+ * 글자는 모두 1rem 이상이다 (.github/scripts/check_text_size.py). */
 @import '../src/base.css';
+
+:root {
+  color-scheme: light dark;
+  --bg: #f6f5f2;           /* 종이 같은 따뜻한 회백색 */
+  --panel: #ffffff;
+  --ink: #1c1b1a;
+  --muted: #6b6862;
+  --line: #e4e1da;
+  --line-strong: #cfcbc1;
+  --accent: #3b4cca;       /* 단 하나의 포인트 색 */
+  --accent-ink: #ffffff;
+  --accent-soft: #eceefc;
+  --warn: #b26a00;
+  --warn-soft: #fbf0dc;
+  --ok: #2e9d6b;
+  --radius: 14px;
+  --shadow: 0 1px 2px rgba(28, 27, 26, .04), 0 8px 24px -12px rgba(28, 27, 26, .12);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121214; --panel: #1b1b1e; --ink: #ecebe8; --muted: #a09d96;
+    --line: #2b2b2f; --line-strong: #3b3b41;
+    --accent: #8c9bff; --accent-ink: #11122a; --accent-soft: #23253f;
+    --warn: #f0b860; --warn-soft: #34290f;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px -12px rgba(0, 0, 0, .6);
+  }
+}
+
+html { scrollbar-gutter: stable; }
+body {
+  margin: 0; min-height: 100vh; background: var(--bg); color: var(--ink);
+  font-family: "Pretendard Variable", Pretendard, -apple-system, "Segoe UI", "Malgun Gothic", sans-serif;
+  font-size: 1rem; line-height: 1.6;
+  word-break: keep-all; overflow-wrap: break-word; -webkit-font-smoothing: antialiased;
+}
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.hidden { display: none !important; }
+
+.wrap { max-width: 72rem; margin: 0 auto; padding: 2.5rem 1.25rem 4rem; }
+
+/* 머리 */
+.top { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }
+.top h1 { margin: 0; font-size: 2rem; line-height: 1.2; letter-spacing: -.02em; }
+.lede { margin: .5rem 0 0; color: var(--muted); max-width: 40rem; }
+.crumb {
+  display: inline-block; margin-bottom: .9rem; padding: .3rem .9rem; border-radius: 999px; text-decoration: none;
+  font-weight: 700; color: var(--accent); background: var(--accent-soft); border: 1px solid transparent;
+  transition: border-color .15s;
+}
+.crumb:hover { border-color: var(--accent); }
+.privacy { display: flex; align-items: center; gap: .5rem; margin: .75rem 0 0; color: var(--muted); }
+.dot { width: .55rem; height: .55rem; border-radius: 50%; background: var(--ok); }
+
+/* 자리 잡기: 왼쪽 조건, 오른쪽 붙여 넣기와 결과 */
+.layout { display: grid; gap: 1.5rem; grid-template-columns: 22rem minmax(0, 1fr); align-items: start; }
+@media (max-width: 62rem) { .layout { grid-template-columns: minmax(0, 1fr); } }
+
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
+.settings { padding: 1.5rem; display: grid; gap: 1.5rem; position: sticky; top: 1rem; }
+@media (max-width: 62rem) { .settings { position: static; } }
+.group h2 { margin: 0 0 .6rem; font-size: 1rem; font-weight: 700; }
+
+/* 고르는 칩: 줄이 접혀도 깔끔하다. 고른 칩은 포인트 색으로 채운다 */
+.chips { display: flex; flex-wrap: wrap; gap: .4rem; }
+.chip {
+  font: inherit; font-weight: 600; cursor: pointer; padding: .35rem .85rem; border-radius: 999px;
+  border: 1px solid var(--line-strong); background: transparent; color: var(--ink);
+  transition: background .15s, border-color .15s, color .15s;
+}
+.chip:hover { border-color: var(--accent); color: var(--accent); }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+.note { margin: .75rem 0 0; color: var(--muted); }
+
+.checks { display: grid; gap: .6rem; }
+.checks label { display: flex; gap: .6rem; align-items: center; cursor: pointer; }
+.checks input { width: 1.1rem; height: 1.1rem; accent-color: var(--accent); }
+
+.main { display: grid; gap: 1.5rem; min-width: 0; }
+.block { padding: 1.5rem; }
+.block-head { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.block-head h2 { margin: 0; font-size: 1.25rem; letter-spacing: -.01em; }
+.meta { color: var(--muted); }
+.spacer { margin-left: auto; display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+
+.btn {
+  display: inline-block; font: inherit; font-weight: 600; cursor: pointer; text-decoration: none;
+  padding: .5rem 1rem; border-radius: 10px;
+  border: 1px solid var(--line-strong); background: var(--panel); color: var(--ink);
+  transition: background .15s, border-color .15s;
+}
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.btn.primary:hover { filter: brightness(1.08); }
+
+/* 붙여 넣는 칸과 결과 칸: 탭과 줄바꿈을 그대로 보이게 둔다.
+   결과는 시험지처럼 글자 그대로 그린다 (탭은 공백 16칸 자리에서 끊긴다) */
+.paste {
+  display: block; width: 100%; margin: 0; padding: 1rem 1.1rem; min-height: 9rem; resize: vertical;
+  border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink);
+  font: inherit; font-size: 1.0625rem; line-height: 1.8; white-space: pre; tab-size: 16; -moz-tab-size: 16; overflow-x: auto;
+}
+.paste:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: var(--accent); }
+pre.paste { min-height: 6rem; }
+
+.callout {
+  padding: .9rem 1.1rem; border-radius: 10px; border: 1px solid var(--line);
+  border-left: 4px solid var(--warn); background: var(--warn-soft);
+}
+
+.hint { margin: .9rem 0 0; color: var(--muted); }
+
+/* 결과 표: 줄을 누르면 그 선택지만 복사한다 */
+.table-wrap { margin-top: 1.25rem; overflow-x: auto; }
+table { width: 100%; min-width: 28rem; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+th { text-align: left; font-weight: 600; color: var(--muted); padding: .5rem .75rem; border-bottom: 1px solid var(--line-strong); white-space: nowrap; }
+td { padding: .65rem .75rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+tbody tr { cursor: pointer; transition: background .12s; }
+tbody tr:hover, tbody tr:focus-visible { background: var(--accent-soft); }
+td.num { width: 4.5rem; font-weight: 700; color: var(--accent); }
+td.body { white-space: pre-line; }
+.num-col { width: 4.5rem; }
+.right { text-align: right; width: 7rem; }
+td.muted { color: var(--muted); }

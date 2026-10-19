@@ -5,148 +5,128 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>지필평가 선택지 정렬기</title>
 <link rel="stylesheet" href="./style.css">
-<style>
-  html { scrollbar-gutter: stable; }
-  body { word-break: keep-all; overflow-wrap: break-word; }
-  :focus-visible { outline: 2px solid #1D2B3A; outline-offset: 2px; }
-  /* 붙여 넣는 칸과 결과 칸: 탭과 줄바꿈을 그대로 보이게 둔다 */
-  .paste {
-    width: 100%; min-height: 14rem; padding: .75rem 1rem; background: #fff;
-    border: 1px solid #CDD6D1; border-radius: .25rem; font-size: 1.0625rem; line-height: 1.7;
-    white-space: pre; overflow-x: auto; tab-size: 16; -moz-tab-size: 16;
-  }
-  /* 결과는 시험지처럼 보이도록 글자 그대로 그린다 (탭은 공백 16칸 자리에서 끊긴다) */
-  pre.paste { margin: 0; font-family: inherit; min-height: 6rem; }
-  .paste:focus { border-color: #2B4560; outline: 2px solid #2B4560; outline-offset: -2px; }
-  /* 고른 단추는 눌린 것처럼 남색으로 채운다 */
-  /* 칸막이를 테두리가 아니라 칩 사이의 틈으로 그린다.
-     그래야 좁은 화면에서 칩이 두 줄로 접혀도 가로·세로 칸막이가 모두 남는다 */
-  .segbar { display: flex; flex-wrap: wrap; gap: 1px; background: #CDD6D1; }
-  .seg { flex: 1 1 auto; padding: .4rem .9rem; font-weight: 600; color: #2B4560; background: #fff; white-space: nowrap; }
-  .seg:hover { background: #E6EDF4; }
-  .seg[aria-pressed="true"] { background: #2B4560; color: #fff; }
-</style>
 <script src="./sorter.js"></script>
 </head>
-<body class="bg-white text-ink font-sans text-base antialiased min-h-screen">
-<main class="max-w-5xl mx-auto px-4 py-8 space-y-5">
+<body>
+<div class="wrap">
 
-  <header class="space-y-1">
-    <h1 class="text-2xl font-bold">지필평가 선택지 정렬기</h1>
-    <p class="text-muted">원안지 선택지나 보기를 붙여 넣으면, 자동으로 글자 수나 사전순으로 정렬합니다. 모든 입력 정보는 사용자의 브라우저 안에서만 처리하고 외부로 전송되지 않습니다. <a class="text-blue-700 underline hover:text-blue-900" href="https://github.com/itmir913/exam-tools/releases/latest/download/choice-order.zip">오프라인에서 사용하려면 클릭하여 다운로드</a>.</p>
+  <header class="top">
+    <div>
+      <!-- 상위(도구 모음)로 올라가는 배지 -->
+      <a class="crumb" href="../">&larr; 지필평가 도구</a>
+      <h1>지필평가 선택지 정렬기</h1>
+      <p class="lede">원안지의 선택지나 보기를 붙여 넣으면 글자 수나 사전순으로 정리합니다.</p>
+      <p class="privacy"><span class="dot" aria-hidden="true"></span>입력한 내용은 이 브라우저 밖으로 나가지 않습니다</p>
+    </div>
+    <a class="btn" href="https://github.com/itmir913/exam-tools/releases/latest/download/choice-order.zip">오프라인용 내려받기 (.zip)</a>
   </header>
 
-  <!-- 메뉴바: 정렬 기준과 번호 모양 -->
-  <section aria-label="정렬 조건" class="space-y-3">
-    <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-      <span class="font-semibold">정렬</span>
-      <div id="orderBar" role="group" aria-label="정렬 기준" class="segbar overflow-hidden rounded border border-rule-strong">
-        <button type="button" class="seg" data-val="orig" aria-pressed="false">원본 순서</button>
-        <button type="button" class="seg" data-val="len" aria-pressed="true">짧은 순</button>
-        <button type="button" class="seg" data-val="lenDesc" aria-pressed="false">긴 순</button>
-        <button type="button" class="seg" data-val="abc" aria-pressed="false">사전순</button>
-        <button type="button" class="seg" data-val="abcDesc" aria-pressed="false">사전 역순</button>
-        <button type="button" class="seg" data-val="headLen" aria-pressed="false">머리말 묶음 → 짧은 순</button>
-        <button type="button" class="seg" data-val="headLenDesc" aria-pressed="false">머리말 묶음 → 긴 순</button>
+  <div class="layout">
+
+    <!-- 왼쪽: 정렬 조건 -->
+    <aside class="panel settings" aria-label="정렬 조건">
+      <div class="group">
+        <h2>정렬</h2>
+        <div id="orderBar" role="group" aria-label="정렬 기준" class="chips">
+          <button type="button" class="chip" data-val="orig" aria-pressed="false">원본 순서</button>
+          <button type="button" class="chip" data-val="len" aria-pressed="true">짧은 순</button>
+          <button type="button" class="chip" data-val="lenDesc" aria-pressed="false">긴 순</button>
+          <button type="button" class="chip" data-val="abc" aria-pressed="false">사전순</button>
+          <button type="button" class="chip" data-val="abcDesc" aria-pressed="false">사전 역순</button>
+          <button type="button" class="chip" data-val="headLen" aria-pressed="false">머리말 묶음 → 짧은 순</button>
+          <button type="button" class="chip" data-val="headLenDesc" aria-pressed="false">머리말 묶음 → 긴 순</button>
+        </div>
+        <p id="headMsg" class="hidden note"></p>
       </div>
-    </div>
-    <p id="headMsg" class="hidden text-muted"></p>
-
-    <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-      <span class="font-semibold">번호</span>
-      <div id="markBar" role="group" aria-label="번호 모양" class="segbar overflow-hidden rounded border border-rule-strong">
-        <button type="button" class="seg" data-val="keep" aria-pressed="true">원본 번호</button>
-        <button type="button" class="seg" data-val="circle" aria-pressed="false">①②③</button>
-        <button type="button" class="seg" data-val="circleK" aria-pressed="false">㉠㉡㉢</button>
-        <button type="button" class="seg" data-val="kor" aria-pressed="false">ㄱㄴㄷ</button>
-        <button type="button" class="seg" data-val="num" aria-pressed="false">1. 2. 3.</button>
-        <button type="button" class="seg" data-val="paren" aria-pressed="false">(1)(2)(3)</button>
-        <button type="button" class="seg" data-val="latin" aria-pressed="false">A. B. C.</button>
-        <button type="button" class="seg" data-val="parenL" aria-pressed="false">(A)(B)(C)</button>
-        <button type="button" class="seg" data-val="hangul" aria-pressed="false">(가)(나)</button>
-        <button type="button" class="seg" data-val="bullet" aria-pressed="false">◦</button>
-        <button type="button" class="seg" data-val="none" aria-pressed="false">없음</button>
+      <div class="group">
+        <h2>번호</h2>
+        <div id="markBar" role="group" aria-label="번호 모양" class="chips">
+          <button type="button" class="chip" data-val="keep" aria-pressed="true">원본 번호</button>
+          <button type="button" class="chip" data-val="circle" aria-pressed="false">①②③</button>
+          <button type="button" class="chip" data-val="circleK" aria-pressed="false">㉠㉡㉢</button>
+          <button type="button" class="chip" data-val="kor" aria-pressed="false">ㄱㄴㄷ</button>
+          <button type="button" class="chip" data-val="num" aria-pressed="false">1. 2. 3.</button>
+          <button type="button" class="chip" data-val="paren" aria-pressed="false">(1)(2)(3)</button>
+          <button type="button" class="chip" data-val="latin" aria-pressed="false">A. B. C.</button>
+          <button type="button" class="chip" data-val="parenL" aria-pressed="false">(A)(B)(C)</button>
+          <button type="button" class="chip" data-val="hangul" aria-pressed="false">(가)(나)</button>
+          <button type="button" class="chip" data-val="bullet" aria-pressed="false">◦</button>
+          <button type="button" class="chip" data-val="none" aria-pressed="false">없음</button>
+        </div>
       </div>
-    </div>
-
-    <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-      <span class="font-semibold">배치</span>
-      <div id="layoutBar" role="group" aria-label="답항 배치" class="segbar overflow-hidden rounded border border-rule-strong">
-        <button type="button" class="seg" data-val="keep" aria-pressed="true">원본 배치</button>
-        <button type="button" class="seg" data-val="1" aria-pressed="false">1행답항</button>
-        <button type="button" class="seg" data-val="2" aria-pressed="false">2행답항</button>
-        <button type="button" class="seg" data-val="3" aria-pressed="false">3행답항</button>
-        <button type="button" class="seg" data-val="4" aria-pressed="false">4행답항</button>
-        <button type="button" class="seg" data-val="5" aria-pressed="false">5행답항</button>
+      <div class="group">
+        <h2>배치</h2>
+        <div id="layoutBar" role="group" aria-label="답항 배치" class="chips">
+          <button type="button" class="chip" data-val="keep" aria-pressed="true">원본 배치</button>
+          <button type="button" class="chip" data-val="1" aria-pressed="false">1행답항</button>
+          <button type="button" class="chip" data-val="2" aria-pressed="false">2행답항</button>
+          <button type="button" class="chip" data-val="3" aria-pressed="false">3행답항</button>
+          <button type="button" class="chip" data-val="4" aria-pressed="false">4행답항</button>
+          <button type="button" class="chip" data-val="5" aria-pressed="false">5행답항</button>
+        </div>
       </div>
-    </div>
-
-    <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-      <span class="font-semibold">구분자</span>
-      <div id="sepBar" role="group" aria-label="선택지 사이 구분자" class="segbar overflow-hidden rounded border border-rule-strong">
-        <button type="button" class="seg" data-val="keep" aria-pressed="false">원본 구분자</button>
-        <button type="button" class="seg" data-val="sp1" aria-pressed="false">공백 1칸</button>
-        <button type="button" class="seg" data-val="tab" aria-pressed="true">탭</button>
-        <button type="button" class="seg" data-val="tab2" aria-pressed="false">탭 2칸</button>
-        <button type="button" class="seg" data-val="sp2" aria-pressed="false">공백 2칸</button>
-        <button type="button" class="seg" data-val="sp4" aria-pressed="false">공백 4칸</button>
+      <div class="group">
+        <h2>구분자</h2>
+        <div id="sepBar" role="group" aria-label="선택지 사이 구분자" class="chips">
+          <button type="button" class="chip" data-val="keep" aria-pressed="false">원본 구분자</button>
+          <button type="button" class="chip" data-val="sp1" aria-pressed="false">공백 1칸</button>
+          <button type="button" class="chip" data-val="tab" aria-pressed="true">탭</button>
+          <button type="button" class="chip" data-val="tab2" aria-pressed="false">탭 2칸</button>
+          <button type="button" class="chip" data-val="sp2" aria-pressed="false">공백 2칸</button>
+          <button type="button" class="chip" data-val="sp4" aria-pressed="false">공백 4칸</button>
+        </div>
       </div>
-    </div>
-
-    <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-      <span class="font-semibold">옵션</span>
-      <div class="flex flex-wrap items-center gap-x-5 gap-y-2">
-        <label class="flex items-center gap-2"><input id="optTrim" type="checkbox" checked class="h-4 w-4 accent-head"> 선택지 앞뒤 공백 제거하기</label>
-        <label class="flex items-center gap-2"><input id="optJoin" type="checkbox" checked class="h-4 w-4 accent-head"> 여러 줄 선택지를 한 줄로 합치기</label>
-        <label class="flex items-center gap-2"><input id="optNoSpace" type="checkbox" class="h-4 w-4 accent-head"> 글자 수 계산 시 공백 제외하기</label>
+      <div class="group">
+        <h2>옵션</h2>
+        <div class="checks">
+          <label><input id="optTrim" type="checkbox" checked> 선택지 앞뒤 공백 제거하기</label>
+          <label><input id="optJoin" type="checkbox" checked> 여러 줄 선택지를 한 줄로 합치기</label>
+          <label><input id="optNoSpace" type="checkbox"> 글자 수 계산 시 공백 제외하기</label>
+        </div>
       </div>
-    </div>
-  </section>
+    </aside>
 
-  <!-- 붙여 넣는 칸 -->
-  <section aria-label="붙여 넣기" class="space-y-2">
-    <div class="flex flex-wrap items-center gap-2">
-      <h2 class="font-semibold">여기에 붙여 넣기</h2>
-      <span id="kindMsg" class="text-muted" aria-live="polite"></span>
-      <span class="ml-auto flex items-center gap-2">
-        <button id="sampleBtn" type="button" class="rounded border border-rule-strong px-3 py-1.5 font-semibold text-head hover:bg-head-soft">예시 넣기</button>
-        <button id="clearBtn" type="button" class="rounded border border-rule-strong px-3 py-1.5 font-semibold text-head hover:bg-head-soft">비우기</button>
-      </span>
-    </div>
-    <textarea id="input" class="paste" spellcheck="false" aria-label="선택지 붙여 넣기"
-      placeholder="예:&#10;① A&#9;② B&#9;③ C&#9;④ D&#9;⑤ E"></textarea>
-  </section>
+    <!-- 오른쪽: 붙여 넣기 → 결과 -->
+    <div class="main">
+      <section class="panel block" aria-label="붙여 넣기">
+        <div class="block-head">
+          <h2>붙여 넣기</h2>
+          <span id="kindMsg" class="meta" aria-live="polite"></span>
+          <span class="spacer">
+            <button id="sampleBtn" type="button" class="btn">예시 넣기</button>
+            <button id="clearBtn" type="button" class="btn">비우기</button>
+          </span>
+        </div>
+        <textarea id="input" class="paste" spellcheck="false" aria-label="선택지 붙여 넣기"
+          placeholder="예:&#10;① A&#9;② B&#9;③ C&#9;④ D&#9;⑤ E"></textarea>
+      </section>
 
-  <div id="errorBox" class="hidden rounded border border-rule border-l-4 border-l-warn-fg bg-warn-bg/40 p-3"></div>
+      <div id="errorBox" class="hidden callout" role="alert"></div>
 
-  <!-- 결과 -->
-  <section id="resultSec" class="hidden space-y-2" aria-label="정렬 결과">
-    <div class="flex flex-wrap items-center gap-2">
-      <h2 class="font-semibold">정렬 결과</h2>
-      <span class="ml-auto flex items-center gap-2">
-        <span id="copyMsg" class="text-muted" aria-live="polite"></span>
-        <button id="copyBtn" type="button" class="rounded bg-head px-3 py-1.5 font-semibold text-white hover:bg-ink">결과 복사</button>
-      </span>
-    </div>
-    <pre id="output" class="paste bg-wash" tabindex="0" aria-label="정렬 결과"></pre>
-    <p class="text-muted">탭은 시험지처럼 일정한 칸(공백 16칸 자리)에서 끊기게 그렸습니다. 복사하면 탭은 탭 그대로 나가므로 한글·워드·엑셀에서 칸이 맞습니다.</p>
+      <section id="resultSec" class="hidden panel block" aria-label="정렬 결과">
+        <div class="block-head">
+          <h2>정렬 결과</h2>
+          <span class="spacer">
+            <span id="copyMsg" class="meta" aria-live="polite"></span>
+            <button id="copyBtn" type="button" class="btn primary">결과 복사</button>
+          </span>
+        </div>
+        <pre id="output" class="paste out" tabindex="0" aria-label="정렬 결과"></pre>
+        <p class="hint">탭은 시험지처럼 일정한 칸(공백 16칸 자리)에서 끊기게 그렸습니다. 복사하면 탭은 탭 그대로 나가므로 한글·워드·엑셀에서 칸이 맞습니다.</p>
 
-    <div class="overflow-x-auto">
-      <table class="w-full min-w-[30rem] table-fixed border-collapse">
-        <thead>
-          <tr class="bg-head text-white [&>th]:border [&>th]:border-head [&>th]:px-3 [&>th]:py-2 [&>th]:font-semibold">
-            <th class="w-16 whitespace-nowrap">번호</th>
-            <th>선택지</th>
-            <th class="w-24 whitespace-nowrap">글자 수</th>
-            <th class="w-24 whitespace-nowrap">원본 순서</th>
-          </tr>
-        </thead>
-        <tbody id="tbody"></tbody>
-      </table>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th class="num-col">번호</th><th>선택지</th><th class="right">글자 수</th><th class="right">원본 순서</th></tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+        <p class="hint"><span id="rowMsg" aria-live="polite">표의 줄을 누르면 그 선택지만 복사합니다.</span></p>
+      </section>
     </div>
-    <p class="text-muted"><span id="rowMsg" aria-live="polite">표의 줄을 누르면 그 선택지만 복사합니다.</span></p>
-  </section>
-</main>
+  </div>
+</div>
 
 <script>
 const $ = id => document.getElementById(id);
@@ -205,12 +185,11 @@ function render() {
   state.rowText = r.placed;
   $('tbody').innerHTML = r.placed.map((body, i) => {
     const from = r.picked[r.slots[i].slot];
-    return '<tr data-i="' + i + '" tabindex="0" title="눌러서 이 선택지 복사" '
-      + 'class="cursor-pointer hover:bg-head-soft [&>td]:border [&>td]:border-rule [&>td]:px-3 [&>td]:py-1.5 align-top">'
-      + '<td class="text-center font-semibold">' + esc(r.markers[i] || (i + 1) + ')') + '</td>'
-      + '<td class="whitespace-pre-line">' + esc(body) + '</td>'
-      + '<td class="text-center tabular-nums">' + X.lengthOf(body, noSpace) + '</td>'
-      + '<td class="text-center tabular-nums text-muted">' + (from + 1) + '</td>'
+    return '<tr data-i="' + i + '" tabindex="0" title="눌러서 이 선택지 복사">'
+      + '<td class="num">' + esc(r.markers[i] || (i + 1) + ')') + '</td>'
+      + '<td class="body">' + esc(body) + '</td>'
+      + '<td class="right">' + X.lengthOf(body, noSpace) + '</td>'
+      + '<td class="right muted">' + (from + 1) + '</td>'
       + '</tr>';
   }).join('');
 }
