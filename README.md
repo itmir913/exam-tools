@@ -32,37 +32,17 @@ npm install
 npm run dev
 ```
 
-랜딩(`index.html`)은 `manifest.json`을 읽어 카드를 그립니다. 이 파일은 커밋하지 않으므로,
-카드를 보려면 한 번 만들어 줍니다.
+랜딩(`index.html`)은 `manifest.json`을 읽어 카드를 그립니다. 이 파일은 커밋하지 않지만,
+개발 서버가 요청을 받을 때마다 `.github/scripts/build_manifest.py`로 새로 만들어 주므로
+따로 돌릴 필요가 없습니다 (Python이 필요합니다).
+
+## 검사와 빌드
+
+배포 워크플로는 `npm run ci` → `npm run build` 순서로 돌립니다. 로컬에서도 같은 명령을 씁니다.
 
 ```bash
-python .github/scripts/build_manifest.py
-```
-
-배포될 모습 그대로 보려면 빌드한 뒤 띄웁니다. 결과는 `dist/`에 쌓입니다.
-
-```bash
-npm run build
-npm run preview
-```
-
-## 테스트
-
-도구마다 의존성 없는 node 테스트가 있습니다.
-
-```bash
-npm test
-```
-
-```bash
-node create-points/test.js
-node choice-order/test.js
-```
-
-화면 글자 크기 검사도 같이 돌려 볼 수 있습니다.
-
-```bash
-python .github/scripts/check_text_size.py
+npm run ci      # 화면 글자 크기 검사 + 도구별 node 테스트
+npm run build   # dist/에 세 쪽을 빌드
 ```
 
 ## 빌드

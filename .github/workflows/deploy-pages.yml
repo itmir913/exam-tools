@@ -52,15 +52,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # 배포 전에 검사한다. 하나라도 걸리면 사이트는 그대로 둔다
-      - name: Check text size
-        run: python3 .github/scripts/check_text_size.py
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
 
-      - name: Test create-points solver
-        run: node create-points/test.js
-
-      - name: Test choice-order sorter
-        run: node choice-order/test.js
+      # 배포 전에 검사한다 (글자 크기 + 도구별 테스트). 하나라도 걸리면 사이트는 그대로 둔다
+      - name: Check
+        run: npm run ci
 
       - name: Build site
         run: npm run build
