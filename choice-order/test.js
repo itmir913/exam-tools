@@ -468,6 +468,27 @@ for (const c of CASES) {
     rl.ok ? rl.kindId + ' ' + rl.items.length : '못 읽음');
 }
 
+/* ───────────── 13-0. 번호처럼 생긴 글자만 줄마다 적은 것 ─────────────
+   "a b c d"를 줄마다 적으면 a, b, c, d가 본문 없는 번호로 읽혀 선지가 모두 빈 글이 됐다.
+   본문이 하나도 없으면 그 글자가 곧 선지다 */
+{
+  for (const t of ['a\nb\nc\nd', 'A\nB\nC', '가\n나\n다\n라', 'ㄱ\nㄴ\nㄷ', '1\n2\n3', '①\n②\n③', 'a b c d']) {
+    const r = X.rearrange(t, { order: 'orig' });
+    const want = t.includes('\n') ? t.split('\n') : null;
+    if (want) {
+      check(`${show(t)}: 줄마다 선지 하나로 읽는다`, r.ok && r.kindId === 'line' && r.items.join('|') === want.join('|'),
+        `${r.kindId} ${show(r.items)}`);
+      const m = X.rearrange(t, { picked: want.map((_, i) => want.length - 1 - i) });
+      check(`${show(t)}: 손으로 뒤집으면 결과도 뒤집힌다`, m.out === [...want].reverse().join('\n'), show(m.out));
+    } else {
+      check(`${show(t)}: 빈 선지를 만들지 않는다`, !r.ok || r.items.every(s => s.trim() !== ''), show(r.items));
+    }
+  }
+  // 번호 뒤에 본문이 있으면 전과 같이 번호로 읽는다
+  const r = X.rearrange('a apple\nb banana\nc cherry', { order: 'orig' });
+  check('본문이 있으면 a b c는 번호다', r.kindId === 'bareL' && r.items.join('|') === 'apple|banana|cherry', `${r.kindId} ${show(r.items)}`);
+}
+
 /* ───────────── 13-1. 교사가 손으로 정한 순서 ───────────── */
 {
   const text = '① 가\t② 나다\t③ 라마바\n④ 사아자차\t⑤ 카타파하거';

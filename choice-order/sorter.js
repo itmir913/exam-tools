@@ -141,6 +141,13 @@ function parse(text, join) {
       }
     });
     if (hits.length < 2) continue;
+    // 번호 뒤에 본문이 하나도 없으면 번호가 아니라 그 글자가 곧 선지다
+    // ("a b c d"나 "가 나 다"를 줄마다 하나씩 적은 것). 줄마다 하나씩 적은 글로 읽는다
+    if (hits.every((h, k) => {
+      const next = hits[k + 1];
+      const end = next && next.line === h.line ? next.start : lines[h.line].length;
+      return lines[h.line].slice(h.end, end).trim() === '';
+    })) continue;
     const seq = isSequence(kind, hits);
     // 본문과 헷갈리기 쉬운 유형은 번호가 차례대로 이어질 때만 번호로 본다
     // 셋은 모여야 번호다. 글자 두 개가 나란한 것은 우연일 수 있다
