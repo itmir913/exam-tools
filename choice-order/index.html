@@ -123,22 +123,28 @@
         <div class="block-head">
           <h2>정렬 결과</h2>
           <span class="spacer">
-            <span id="copyMsg" class="meta" aria-live="polite"></span>
-            <button id="copyBtn" type="button" class="btn primary" disabled>결과 복사</button>
+            <span id="customMsg" class="meta hidden">순서를 직접 조정했습니다.</span>
+            <button id="resetBtn" type="button" class="btn hidden">자동 정렬로 되돌리기</button>
           </span>
         </div>
-        <pre id="output" class="paste out" tabindex="0" aria-label="정렬 결과" data-empty="붙여 넣으면 여기에 정렬한 결과가 나옵니다."></pre>
-        <p class="hint">탭은 시험지처럼 일정한 칸(공백 16칸 자리)에서 끊기게 그렸습니다. 복사하면 탭은 탭 그대로 나가므로 한글·워드·엑셀에서 칸이 맞습니다.</p>
 
         <div class="table-wrap">
           <table>
             <thead>
-              <tr><th class="num-col">번호</th><th>선택지</th><th class="right">글자 수</th><th class="right">원본 순서</th></tr>
+              <tr><th class="move-col">순서</th><th class="num-col">번호</th><th>선택지</th><th class="right">글자 수</th><th class="right">원본 순서</th><th class="copy-col"><span class="sr-only">복사</span></th></tr>
             </thead>
             <tbody id="tbody"></tbody>
           </table>
         </div>
-        <p class="hint"><span id="rowMsg" aria-live="polite">표의 줄을 누르면 그 선택지만 복사합니다.</span></p>
+        <p class="hint"><span id="rowMsg" aria-live="polite"></span></p>
+
+        <textarea id="output" class="paste out" readonly spellcheck="false" aria-label="정렬 결과"
+          placeholder="붙여 넣으면 여기에 정렬한 결과가 나옵니다."></textarea>
+        <p class="hint">탭은 시험지처럼 일정한 칸(공백 16칸 자리)에서 끊기게 그렸습니다. 복사하면 탭은 탭 그대로 나가므로 한글·워드·엑셀에서 칸이 맞습니다.</p>
+        <div class="copy-bar">
+          <span id="copyMsg" class="meta" aria-live="polite"></span>
+          <button id="copyBtn" type="button" class="btn primary" disabled>결과 복사</button>
+        </div>
       </section>
     </div>
   </div>
@@ -150,7 +156,9 @@ const $ = id => document.getElementById(id);
 const X = window.ChoiceOrder;
 
 /* ───────────── 결과 만들기 ───────────── */
-const state = { order: 'len', mark: 'keep', layout: 'keep', sep: 'tab', outText: '', rowText: [] };
+// custom: 교사가 ▲▼로 정한 순서 (자리마다 놓을 선지 번호). 없으면 고른 기준대로 자동 정렬한다
+const state = { order: 'len', mark: 'keep', layout: 'keep', sep: 'tab', outText: '', rowText: [], custom: null, picked: [] };
+const ROW_HINT = '▲ ▼로 선택지의 자리를 바꾸면 아래 결과에 바로 반영됩니다. 번호는 자리에 그대로 남습니다.';
 
 // 결과 카드는 늘 보인다. 보여 줄 결과가 없으면 비우고 흐리게 둘 뿐 없애지 않는다
 function setIdle(idle) {
@@ -160,7 +168,10 @@ function setIdle(idle) {
   if (idle) {
     state.outText = '';
     state.rowText = [];
-    $('output').textContent = '';
+    state.picked = [];
+    state.custom = null;
+    $('output').value = '';
+    showCustom(false);
     $('tbody').replaceChildren();
     $('copyMsg').textContent = '';
     $('headMsg').classList.add('hidden');
@@ -181,6 +192,7 @@ function render() {
   const r = X.rearrange(text, {
     order: state.order, mark: state.mark, layout: state.layout, sep: state.sep,
     trim: $('optTrim').checked, noSpace, join: $('optJoin').checked,
+    picked: state.custom,
   });
 
   if (!r.ok) {
@@ -206,23 +218,59 @@ function render() {
     headBox.classList.add('hidden');
   }
 
+  // 선지 수가 바뀌어 손으로 정한 순서가 맞지 않으면 sorter.js가 버리고 자동 정렬한다
+  if (state.custom && state.custom.join() !== r.picked.join()) state.custom = null;
+  state.picked = r.picked;
+  showCustom(state.custom !== null);
+
   state.outText = r.out;
-  $('output').textContent = r.out;
+  const out = $('output');
+  out.value = r.out;
+  out.rows = Math.max(3, r.out.split('\n').length);
   setIdle(false);
   $('copyMsg').textContent = '';
-  $('rowMsg').textContent = '표의 줄을 누르면 그 선택지만 복사합니다.';
+  $('rowMsg').textContent = ROW_HINT;
 
-  // 아래 표: 새 자리의 번호와 글자 수
+  // 위 표: 자리마다 놓인 선지. ▲▼로 옆 자리와 바꾸고, 복사로 그 선지만 복사한다
   state.rowText = r.placed;
+  const last = r.placed.length - 1;
   $('tbody').innerHTML = r.placed.map((body, i) => {
     const from = r.picked[r.slots[i].slot];
-    return '<tr data-i="' + i + '" tabindex="0" title="눌러서 이 선택지 복사">'
-      + '<td class="num">' + esc(r.markers[i] || (i + 1) + ')') + '</td>'
+    const mark = r.markers[i] || (i + 1) + ')';
+    return '<tr data-i="' + i + '">'
+      + '<td class="move">'
+      +   '<button type="button" class="icon-btn" data-act="up" aria-label="' + esc(mark) + ' 자리의 선택지를 위로"' + (i === 0 ? ' disabled' : '') + '>▲</button>'
+      +   '<button type="button" class="icon-btn" data-act="down" aria-label="' + esc(mark) + ' 자리의 선택지를 아래로"' + (i === last ? ' disabled' : '') + '>▼</button>'
+      + '</td>'
+      + '<td class="num">' + esc(mark) + '</td>'
       + '<td class="body">' + esc(body) + '</td>'
       + '<td class="right">' + X.lengthOf(body, noSpace) + '</td>'
       + '<td class="right muted">' + (from + 1) + '</td>'
+      + '<td class="copy"><button type="button" class="btn small" data-act="copy">복사</button></td>'
       + '</tr>';
   }).join('');
+}
+
+// 손으로 순서를 바꾼 동안에는 그렇다고 알리고 되돌릴 단추를 보인다
+function showCustom(on) {
+  $('customMsg').classList.toggle('hidden', !on);
+  $('resetBtn').classList.toggle('hidden', !on);
+}
+
+/* i번째 자리의 선지를 옆 자리(step: -1 위, +1 아래)의 선지와 바꾼다 */
+function move(i, step, act) {
+  const j = i + step;
+  if (j < 0 || j >= state.picked.length) return;
+  const next = state.picked.slice();
+  [next[i], next[j]] = [next[j], next[i]];
+  state.custom = next;
+  render();
+  // 옮긴 선지를 따라가 같은 단추에 머문다. 끝에 닿아 그 단추를 못 누르면 반대쪽 단추로
+  const row = $('tbody').querySelector('tr[data-i="' + j + '"]');
+  if (!row) return;
+  $('rowMsg').textContent = row.querySelector('.num').textContent + ' 자리로 옮겼습니다: ' + state.rowText[j];
+  const btn = row.querySelector('button[data-act="' + act + '"]');
+  (btn && !btn.disabled ? btn : row.querySelector('button[data-act="' + (act === 'up' ? 'down' : 'up') + '"]')).focus();
 }
 
 function esc(s) {
@@ -236,6 +284,8 @@ function bindBar(barId, key) {
     const btn = e.target.closest('button[data-val]');
     if (!btn) return;
     state[key] = btn.dataset.val;
+    // 정렬 기준을 누르면 (이미 눌린 것이라도) 손으로 정한 순서를 버리고 그 기준으로 다시 늘어놓는다
+    if (key === 'order') state.custom = null;
     for (const b of bar.querySelectorAll('button[data-val]')) {
       b.setAttribute('aria-pressed', String(b === btn));
     }
@@ -247,12 +297,19 @@ bindBar('markBar', 'mark');
 bindBar('layoutBar', 'layout');
 bindBar('sepBar', 'sep');
 
-$('input').addEventListener('input', render);
+// 붙여 넣은 글이 바뀌면 선지도 달라지므로 자동 정렬부터 다시 한다
+$('input').addEventListener('input', () => { state.custom = null; render(); });
+$('resetBtn').addEventListener('click', () => {
+  state.custom = null;
+  render();
+  $('rowMsg').textContent = '자동 정렬로 되돌렸습니다.';
+  $('copyBtn').focus();
+});
 $('optTrim').addEventListener('change', render);
 $('optNoSpace').addEventListener('change', render);
 $('optJoin').addEventListener('change', render);
 
-$('clearBtn').addEventListener('click', () => { $('input').value = ''; render(); $('input').focus(); });
+$('clearBtn').addEventListener('click', () => { $('input').value = ''; state.custom = null; render(); $('input').focus(); });
 
 /* 손에 익히라고 두는 예시. 실제 시험지 선택지가 아니라 이 도구에서 꾸며 낸 글이다 */
 const SAMPLES = [
@@ -291,6 +348,7 @@ $('sampleBtn').addEventListener('click', () => {
   if (SAMPLES.length > 1 && i === lastSample) i = (i + 1) % SAMPLES.length;
   lastSample = i;
   $('input').value = SAMPLES[i];
+  state.custom = null;
   render();
 });
 
@@ -319,12 +377,12 @@ $('copyBtn').addEventListener('click', async () => {
   const done = await copyText(state.outText);
   $('copyMsg').textContent = done
     ? '복사했습니다. 엑셀이나 한글에 그대로 붙여 넣으세요.'
-    : '이 브라우저에서는 클립보드에 쓸 수 없습니다. 결과 칸을 직접 복사하세요.';
+    : '이 브라우저에서는 클립보드에 쓸 수 없습니다. 결과 칸을 선택해 직접 복사하세요.';
 });
 
-/* 표의 줄을 누르면 그 선택지 한 개만 복사한다 */
-async function copyRow(tr) {
-  const text = state.rowText[Number(tr.dataset.i)];
+/* 표의 단추: ▲▼는 자리를 바꾸고, 복사는 그 선택지 한 개만 복사한다 */
+async function copyRow(i) {
+  const text = state.rowText[i];
   if (text === undefined) return;
   const done = await copyText(text);
   $('rowMsg').textContent = done
@@ -333,15 +391,12 @@ async function copyRow(tr) {
 }
 
 $('tbody').addEventListener('click', e => {
-  const tr = e.target.closest('tr[data-i]');
-  if (tr) copyRow(tr);
-});
-$('tbody').addEventListener('keydown', e => {
-  if (e.key !== 'Enter' && e.key !== ' ') return;
-  const tr = e.target.closest('tr[data-i]');
-  if (!tr) return;
-  e.preventDefault();
-  copyRow(tr);
+  const btn = e.target.closest('button[data-act]');
+  if (!btn || btn.disabled) return;
+  const i = Number(btn.closest('tr[data-i]').dataset.i);
+  const act = btn.dataset.act;
+  if (act === 'copy') copyRow(i);
+  else move(i, act === 'up' ? -1 : 1, act);
 });
 
 /* 밝은 화면 / 어두운 화면 */
