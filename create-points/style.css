@@ -151,7 +151,8 @@
 .in.is-auto { color: var(--muted); }
 
 /* 계산한 조건이 바뀐 동안 지난 결과를 흐리게, 결과가 없을 때도 카드는 그대로 두고 흐리게 */
-.is-stale, .is-idle { opacity: .5; }
+.is-stale, .is-idle, .is-busy { opacity: .5; }
+.is-busy { pointer-events: none; cursor: progress; }
 .is-idle .btn { pointer-events: none; }
 
 tr.zero { color: var(--muted); background: var(--bg); }

@@ -275,10 +275,14 @@ async function calculate() {
   const t0 = Date.now();
   btn.textContent = '계산 중…';
   btn.disabled = true;
+  // 계산을 일으킨 것이 [계산]이든 자물쇠·문항 수든, 계산하는 동안은 배점표를 흐리게 하고 잠근다
+  $('resultSec').classList.add('is-busy');
+  $('resultSec').setAttribute('aria-busy', 'true');
+  $('staleMsg').textContent = '계산 중…';
+  $('staleMsg').classList.remove('hidden');
   // 1초가 넘어가면 멈춘 게 아니라 아직 찾는 중임을 초 단위로 알린다
   const tick = setInterval(() => {
     $('staleMsg').textContent = `계산 중… ${Math.round((Date.now() - t0) / 1000)}초`;
-    $('staleMsg').classList.remove('hidden');
   }, 1000);
   try {
     await run(() => my !== runId);
@@ -289,7 +293,8 @@ async function calculate() {
       btn.disabled = false;
       $('staleMsg').textContent = '조건이 바뀌었습니다';
       $('staleMsg').classList.add('hidden');
-      $('resultSec').classList.remove('is-stale');
+      $('resultSec').classList.remove('is-stale', 'is-busy');
+      $('resultSec').removeAttribute('aria-busy');
     }
   }
 }
