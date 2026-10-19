@@ -177,7 +177,11 @@ function setIdle(idle) {
   }
 }
 
+// 화면을 몇 번 새로 그렸는지. ▲▼가 잠금을 푸는 사이 다른 단추가 표를 다시 그렸는지 본다
+let drawn = 0;
+
 function render() {
+  drawn++;
   const text = $('input').value;
   const err = $('errorBox');
   if (text.trim() === '') {
@@ -254,6 +258,8 @@ function render() {
       + '<td class="copy"><button type="button" class="btn small" data-act="copy">복사</button></td>'
       + '</tr>';
   }).join('');
+  // 잠긴 동안 다른 단추가 표를 다시 그렸으면 새 단추도 잠가 둔다 (풀 때 함께 푼다)
+  if (locked) for (const b of $('tbody').querySelectorAll('button')) b.disabled = true;
 }
 
 // 손으로 순서를 바꾼 동안에만 되돌릴 단추를 보인다. 단추가 보이는 것으로 손댄 줄 안다
@@ -292,14 +298,23 @@ function move(i, step, act) {
   state.custom = next;
   render();
   lockTable();
-  unlockTable(() => focusMoved(j, act));
+  const row = $('tbody').querySelector('tr[data-i="' + j + '"]');
+  if (row) $('rowMsg').textContent = row.querySelector('.num .now').textContent + ' 자리로 옮겼습니다: ' + state.rowText[j];
+  const mine = drawn;
+  unlockTable(() => {
+    // 그사이 다른 단추가 표를 다시 그렸으면 (정렬 칩, 입력 등) 옮긴 선지가 그 자리에 없으므로
+    // 포커스를 옮기지 않는다. 그쪽을 누른 사람의 포커스를 빼앗지도 않는다
+    if (drawn === mine) focusMoved(j, act);
+  });
 }
 
 function focusMoved(j, act) {
-  // 옮긴 선지를 따라가 같은 단추에 머문다. 끝에 닿아 그 단추를 못 누르면 반대쪽 단추로
+  // 옮긴 선지를 따라가 같은 단추에 머문다. 끝에 닿아 그 단추를 못 누르면 반대쪽 단추로.
+  // 잠긴 새 표 밖(입력 칸 등)으로 포커스가 갔으면 그대로 둔다
+  const a = document.activeElement;
+  if (a && a !== document.body && !$('tbody').contains(a)) return;
   const row = $('tbody').querySelector('tr[data-i="' + j + '"]');
   if (!row) return;
-  $('rowMsg').textContent = row.querySelector('.num .now').textContent + ' 자리로 옮겼습니다: ' + state.rowText[j];
   const btn = row.querySelector('button[data-act="' + act + '"]');
   (btn && !btn.disabled ? btn : row.querySelector('button[data-act="' + (act === 'up' ? 'down' : 'up') + '"]')).focus();
 }
