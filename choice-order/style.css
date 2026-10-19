@@ -44,7 +44,7 @@ body {
 
 /* 머리 */
 .top { position: relative; display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; }
-.top h1 { margin: 0; font-size: 2rem; line-height: 1.2; letter-spacing: -.02em; }
+.top h1 { margin: 0; font-size: 2rem; font-weight: 700; line-height: 1.2; letter-spacing: -.02em; }
 .lede { margin: .5rem 0 0; color: var(--muted); max-width: 40rem; }
 .crumb {
   display: inline-block; margin-bottom: .9rem; padding: .3rem .9rem; border-radius: 999px; text-decoration: none;
@@ -93,8 +93,9 @@ body {
 
 .main { display: grid; gap: 1.5rem; min-width: 0; }
 .block { padding: 1.5rem; }
-.block-head { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; margin-bottom: 1rem; }
-.block-head h2 { margin: 0; font-size: 1.25rem; letter-spacing: -.01em; }
+.block-head { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; margin: -.3rem 0 1rem; }
+.block-head h2 { margin: 0; font-size: 1.25rem; font-weight: 700; line-height: 1.25; letter-spacing: -.01em; }
+.block-head .btn { padding: .35rem 1rem; line-height: 1.5; }
 .meta { color: var(--muted); }
 .spacer { margin-left: auto; display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
 
