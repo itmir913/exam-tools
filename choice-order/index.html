@@ -131,7 +131,7 @@
         <div class="table-wrap">
           <table>
             <thead>
-              <tr><th class="move-col">순서</th><th class="num-col">번호</th><th>선택지</th><th class="right">글자 수</th><th class="right">원본 순서</th><th class="copy-col"><span class="sr-only">복사</span></th></tr>
+              <tr><th class="move-col">순서</th><th class="num-col">번호</th><th>선택지</th><th class="right">글자 수</th><th class="copy-col"><span class="sr-only">복사</span></th></tr>
             </thead>
             <tbody id="tbody"></tbody>
           </table>
@@ -233,19 +233,25 @@ function render() {
 
   // 위 표: 자리마다 놓인 선지. ▲▼로 옆 자리와 바꾸고, 복사로 그 선지만 복사한다
   state.rowText = r.placed;
+  // 번호 칸에는 그 선지가 원래 있던 자리 → 지금 자리를 보인다 (ㄱ → ㄷ).
+  // 번호가 없거나 모두 같은 머리표(◦)면 자리를 가를 수 없으므로 1) 2) 3)으로 적는다
   const last = r.placed.length - 1;
+  const named = r.markers.every(m => m !== '') && new Set(r.markers).size === r.markers.length;
+  const label = k => named ? r.markers[k] : (k + 1) + ')';
   $('tbody').innerHTML = r.placed.map((body, i) => {
     const from = r.picked[r.slots[i].slot];
-    const mark = r.markers[i] || (i + 1) + ')';
+    const mark = label(i);
+    const num = from === i
+      ? '<span class="now">' + esc(mark) + '</span>'
+      : '<span class="was">' + esc(label(from)) + '</span><span class="arrow" aria-hidden="true">→</span><span class="now">' + esc(mark) + '</span>';
     return '<tr data-i="' + i + '">'
       + '<td class="move">'
       +   '<button type="button" class="icon-btn" data-act="up" aria-label="' + esc(mark) + ' 자리의 선택지를 위로"' + (i === 0 ? ' disabled' : '') + '>▲</button>'
       +   '<button type="button" class="icon-btn" data-act="down" aria-label="' + esc(mark) + ' 자리의 선택지를 아래로"' + (i === last ? ' disabled' : '') + '>▼</button>'
       + '</td>'
-      + '<td class="num">' + esc(mark) + '</td>'
+      + '<td class="num" aria-label="' + esc(from === i ? mark + ', 제자리' : label(from) + '에서 ' + mark + '로') + '">' + num + '</td>'
       + '<td class="body">' + esc(body) + '</td>'
       + '<td class="right">' + X.lengthOf(body, noSpace) + '</td>'
-      + '<td class="right muted">' + (from + 1) + '</td>'
       + '<td class="copy"><button type="button" class="btn small" data-act="copy">복사</button></td>'
       + '</tr>';
   }).join('');
@@ -268,7 +274,7 @@ function move(i, step, act) {
   // 옮긴 선지를 따라가 같은 단추에 머문다. 끝에 닿아 그 단추를 못 누르면 반대쪽 단추로
   const row = $('tbody').querySelector('tr[data-i="' + j + '"]');
   if (!row) return;
-  $('rowMsg').textContent = row.querySelector('.num').textContent + ' 자리로 옮겼습니다: ' + state.rowText[j];
+  $('rowMsg').textContent = row.querySelector('.num .now').textContent + ' 자리로 옮겼습니다: ' + state.rowText[j];
   const btn = row.querySelector('button[data-act="' + act + '"]');
   (btn && !btn.disabled ? btn : row.querySelector('button[data-act="' + (act === 'up' ? 'down' : 'up') + '"]')).focus();
 }

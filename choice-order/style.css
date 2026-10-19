@@ -147,11 +147,13 @@ td.copy { width: 5rem; text-align: right; padding-top: .45rem; padding-bottom: .
 .icon-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
 .icon-btn:disabled { opacity: .35; cursor: not-allowed; }
 .btn.small { padding: .3rem .8rem; }
-td.num { width: 4.5rem; font-weight: 700; color: var(--accent); }
+/* 번호 칸: 원래 자리(흐리게) → 지금 자리 */
+td.num { width: 7.5rem; white-space: nowrap; font-weight: 700; color: var(--accent); }
+td.num .was { color: var(--muted); font-weight: 500; opacity: .75; }
+td.num .arrow { color: var(--muted); margin: 0 .35rem; font-weight: 400; }
 td.body { white-space: pre-line; }
-.num-col { width: 4.5rem; }
+.num-col { width: 7.5rem; }
 .right { text-align: right; width: 7rem; }
-td.muted { color: var(--muted); }
 
 /* 결과가 아직 없을 때: 카드는 그대로 두고 흐리게, 누를 수 없게 한다 */
 .is-idle { opacity: .5; }
