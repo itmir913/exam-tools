@@ -654,7 +654,7 @@ function renderStats(s, step) {
 
   const ties = s.miss.map(m =>
     [`${m.wrong}문항`, countText(m.scores) + '가지', pct(m.tie)]);
-  const right = statTable('동점이 발생할 확률', ['틀린 문항', '나올 점수', '동점 확률'], ties,
+  const right = statTable('동점이 발생할 확률', ['틀린 문항', '가능한 경우의 수', '동점 확률'], ties,
     '같은 수의 문항을 (서로 다르게) 틀린 두 학생이 같은 점수를 받을 확률입니다. 낮을수록 좋습니다.');
 
   $('stats').replaceChildren(left, right);
