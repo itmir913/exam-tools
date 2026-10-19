@@ -16,7 +16,8 @@
         })();
     </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>지필평가 도구 | luminousky.com</title>
+    <meta name="description" content="배점 나누기, 선택지 정렬처럼 지필평가 문항을 낼 때 손이 많이 가는 계산과 정리를 브라우저에서 끝내는 도구 모음입니다.">
+    <title>지필평가 도구 | Teacher Utility Kit</title>
     <link rel="icon" href="https://luminousky.com/favicon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="https://luminousky.com/apple-touch-icon.png">
 
@@ -38,82 +39,6 @@
             overflow-wrap: break-word;
         }
 
-        /* First light: dawn sky hung behind the top of the page (same palette as luminousky.com).
-           It runs past the hero and melts into the page, so the colors get room to breathe.
-           It lives inside .page-body and never reaches past it, so a short page fades the sky
-           out before the footer instead of cutting it off. */
-        .page-sky {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 100%;
-            max-height: 640px;
-            z-index: -1;
-            overflow: hidden;
-            pointer-events: none;
-            background: linear-gradient(to bottom,
-                #9dbcf5 0%, #aebaf5 12%, #c2b8f4 26%, #d8bdea 38%,
-                #f2c8dc 50%, #fbcbc6 59%, #ffcfb3 66%,
-                #fdddca 76%, #fcede4 87%, #fbfbfd 100%);
-            -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
-            mask-image: linear-gradient(to bottom, #000 72%, transparent 100%);
-        }
-        @media (min-width: 768px) {
-            .page-sky {
-                max-height: 760px;
-            }
-        }
-
-        .page-sky-sun {
-            position: absolute;
-            left: 50%;
-            top: 40%;
-            width: 90%;
-            height: 40%;
-            transform: translateX(-50%);
-            background: radial-gradient(ellipse at center, rgba(255, 184, 140, 0.8) 0%, rgba(255, 204, 170, 0.45) 35%, transparent 70%);
-        }
-
-        /* Before dawn: the same sky, an hour earlier */
-        [data-theme="dark"] .page-sky {
-            background: linear-gradient(to bottom,
-                #0b1640 0%, #151b52 12%, #1c1f63 22%, #31206a 32%,
-                #45226a 42%, #6a2a5e 54%, #7a2e55 62%,
-                #6a2848 72%, #3e1630 83%, #150810 93%, #000000 100%);
-        }
-
-        [data-theme="dark"] .page-sky-sun {
-            background: radial-gradient(ellipse at center, rgba(255, 140, 95, 0.55) 0%, rgba(215, 80, 115, 0.3) 35%, transparent 70%);
-        }
-
-        .reveal {
-            opacity: 0;
-            transform: translateY(24px);
-            transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-                        transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-        }
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Cards stay centered under the title however few there are, last row included */
-        .entries-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 1rem;
-        }
-        .entries-grid > * {
-            flex: 1 1 100%;
-        }
-        @media (min-width: 640px) {
-            .entries-grid > * {
-                flex: 0 1 280px;
-            }
-        }
-
         /* Theme toggle: show the icon of the theme you would switch to */
         .theme-toggle .icon-sun {
             display: none;
@@ -126,144 +51,114 @@
         }
     </style>
 </head>
-<body class="bg-[#fbfbfd] text-[#1d1d1f] dark:bg-black dark:text-[#f5f5f7] tracking-tight min-h-screen flex flex-col relative isolate">
-
-<div class="page-body relative flex-grow flex flex-col">
-
-<div class="page-sky" aria-hidden="true">
-    <div class="page-sky-sun"></div>
-</div>
+<!-- Teacher Utility Kit의 하위 쪽(teacher-tools 등)과 같은 양식이다.
+     TUK 홈의 카드에서 이 쪽으로 들어오고, 머리의 배지와 바닥글로 TUK 홈에 돌아간다. -->
+<body class="bg-slate-50 dark:bg-black text-slate-800 dark:text-[#f5f5f7] min-h-screen flex flex-col selection:bg-indigo-600 selection:text-white">
 
 <!-- ░░ HERO ░░ -->
-<header class="relative pt-16 pb-12 md:pt-20 md:pb-16 flex flex-col items-center justify-center px-6 text-center overflow-hidden reveal">
+<header class="relative bg-white dark:bg-[#1c1c1e] border-b border-slate-200 dark:border-[#333336] py-24 px-4 text-center">
     <button type="button" id="theme-toggle" aria-label="Switch to dark mode"
             class="theme-toggle absolute top-5 right-5 md:top-6 md:right-6 z-20 w-10 h-10 flex items-center justify-center rounded-full
-                   border border-[#d2d2d7]/60 bg-white/40 backdrop-blur text-[#86868b] dark:text-[#a1a1a6] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7]
-                   dark:border-[#333336]/60 dark:bg-[#1c1c1e]/40 dark:text-[#a1a1a6] dark:hover:text-[#f5f5f7]
+                   border border-slate-200 bg-white/60 backdrop-blur text-slate-500 hover:text-slate-800
+                   dark:border-[#333336] dark:bg-[#1c1c1e]/60 dark:text-[#a1a1a6] dark:hover:text-[#f5f5f7]
                    transition-colors duration-300">
         <i class="icon-moon fa-solid fa-moon"></i>
         <i class="icon-sun fa-solid fa-sun"></i>
     </button>
-    <div class="relative z-10 max-w-5xl mx-auto w-full">
-        <h1 class="text-5xl sm:text-6xl md:text-7xl font-bold tracking-tighter leading-none text-[#1d1d1f] dark:text-[#f5f5f7]">
+    <div class="max-w-screen-xl mx-auto">
+        <a href="https://luminousky.com/teacher-utility-kit/" class="inline-block mb-4 px-4 py-2 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/30 text-indigo-600 dark:text-indigo-400 rounded-full text-base font-bold tracking-wide [@media(hover:hover)]:hover:bg-indigo-100 dark:[@media(hover:hover)]:hover:bg-indigo-500/20 active:bg-indigo-100 dark:active:bg-indigo-500/20 no-underline transition [-webkit-tap-highlight-color:transparent] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
+            Teacher Utility Kit
+        </a>
+        <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-8 text-slate-900 dark:text-[#f5f5f7]">
             지필평가 도구
         </h1>
+        <p class="text-xl md:text-2xl text-slate-600 dark:text-[#a1a1a6] max-w-3xl mx-auto leading-relaxed font-medium">
+            지필평가 문항을 낼 때 손이 많이 가는 계산과 정리를<br class="hidden md:block">
+            브라우저에서 바로 끝내는 도구 모음입니다.
+        </p>
     </div>
 </header>
 
 <!-- ░░ MAIN ░░ -->
-<main class="flex-grow px-6 pb-16 md:pb-32 pt-6">
-    <div class="max-w-7xl mx-auto">
+<main class="flex-grow max-w-screen-xl mx-auto px-4 py-20 w-full">
 
-        <div id="entries-container" class="entries-grid"></div>
-
-        <div id="empty-state" class="hidden text-center py-24 reveal">
-            <p class="text-lg font-medium text-[#86868b] dark:text-[#a1a1a6]">현재 등록된 실험이 없습니다.</p>
+    <section id="tools" class="scroll-mt-12">
+        <div class="mb-12 border-l-4 border-indigo-600 pl-4">
+            <h2 class="text-3xl font-bold text-slate-900 dark:text-[#f5f5f7] mb-4">도구</h2>
+            <p class="text-lg text-slate-600 dark:text-[#a1a1a6] font-medium">설치 없이 브라우저에서 열어 씁니다. 입력한 내용은 이 브라우저 밖으로 나가지 않습니다.</p>
         </div>
 
-    </div>
+        <!-- 도구를 더하면 카드를 여기에 한 장 더 적는다 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+
+            <a href="./create-points/"
+               class="group flex flex-col bg-white dark:bg-[#1c1c1e] p-8 rounded-2xl border border-slate-200 dark:border-[#333336] shadow-sm
+                      hover:shadow-md hover:border-slate-300 dark:hover:border-[#48484a] no-underline transition-all
+                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
+                <div class="flex items-center gap-5 mb-6">
+                    <div class="shrink-0 w-16 h-16 bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center text-3xl shadow-inner">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-slate-800 dark:text-[#f5f5f7] break-keep">지필평가 배점 생성기</h3>
+                        <p class="text-base text-slate-500 dark:text-[#a1a1a6] mt-1">총점과 문항 수로 배점표를 짭니다</p>
+                    </div>
+                </div>
+                <p class="text-base text-slate-600 dark:text-[#a1a1a6] leading-relaxed mb-6">
+                    총점과 문항 수를 넣으면 배점별 문항 수를 자동으로 나눕니다. 배점 종류를 최대한 늘려 다른 문항을 틀린
+                    학생끼리 같은 점수가 덜 나오게 하고, 난이도별 문항 수도 함께 맞춥니다.
+                </p>
+                <span class="mt-auto inline-flex items-center text-blue-600 dark:text-blue-400 group-hover:text-blue-800 dark:group-hover:text-blue-300 font-bold text-base">
+                    바로가기 <i class="fa-solid fa-arrow-right ml-2 transition-transform duration-200 group-hover:translate-x-1"></i>
+                </span>
+            </a>
+
+            <a href="./choice-order/"
+               class="group flex flex-col bg-white dark:bg-[#1c1c1e] p-8 rounded-2xl border border-slate-200 dark:border-[#333336] shadow-sm
+                      hover:shadow-md hover:border-slate-300 dark:hover:border-[#48484a] no-underline transition-all
+                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
+                <div class="flex items-center gap-5 mb-6">
+                    <div class="shrink-0 w-16 h-16 bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 rounded-2xl flex items-center justify-center text-3xl shadow-inner">
+                        <i class="fa-solid fa-arrow-down-short-wide"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-slate-800 dark:text-[#f5f5f7] break-keep">지필평가 선택지 정렬기</h3>
+                        <p class="text-base text-slate-500 dark:text-[#a1a1a6] mt-1">선택지를 글자 수순·사전순으로 늘어놓습니다</p>
+                    </div>
+                </div>
+                <p class="text-base text-slate-600 dark:text-[#a1a1a6] leading-relaxed mb-6">
+                    원안지의 선택지나 보기를 붙여 넣으면 정렬하고, 시험지에서 쓰는 번호를 알아보아 다시 매깁니다.
+                    정렬한 순서는 직접 조정할 수 있고, 탭 구분으로 복사하면 한글·워드·엑셀에서 칸이 맞습니다.
+                </p>
+                <span class="mt-auto inline-flex items-center text-blue-600 dark:text-blue-400 group-hover:text-blue-800 dark:group-hover:text-blue-300 font-bold text-base">
+                    바로가기 <i class="fa-solid fa-arrow-right ml-2 transition-transform duration-200 group-hover:translate-x-1"></i>
+                </span>
+            </a>
+
+        </div>
+    </section>
+
 </main>
 
-</div>
-
 <!-- ░░ FOOTER ░░ -->
-<footer class="py-10 bg-[#f5f5f7] dark:bg-[#0d0d0f] border-t border-black/[0.08] dark:border-[#333336]">
-    <div class="max-w-7xl mx-auto px-6 flex flex-col items-center gap-4">
-
-        <div class="flex items-center gap-5">
-            <a href="https://luminousky.com"
-               target="_blank" rel="noopener noreferrer"
-               aria-label="luminousky.com"
-               class="text-2xl text-[#86868b] dark:text-[#a1a1a6] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7] hover:-translate-y-px transition-all duration-200">
-                <i class="fa-solid fa-globe"></i>
-            </a>
-            <a href="mailto:hello@luminousky.com"
-               aria-label="hello@luminousky.com"
-               class="text-2xl text-[#86868b] dark:text-[#a1a1a6] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7] hover:-translate-y-px transition-all duration-200">
-                <i class="fa-solid fa-envelope"></i>
-            </a>
-            <a href="https://github.com/itmir913/exam-tools"
-               target="_blank" rel="noopener noreferrer"
-               aria-label="GitHub Repository"
-               class="text-2xl text-[#86868b] dark:text-[#a1a1a6] hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7] hover:-translate-y-px transition-all duration-200">
-                <i class="fa-brands fa-github"></i>
-            </a>
-        </div>
-
-        <p class="text-center text-[#86868b] dark:text-[#a1a1a6]">
+<footer class="py-8 border-t border-slate-200 dark:border-[#333336] bg-white dark:bg-[#1c1c1e] mt-auto">
+    <div class="max-w-6xl mx-auto px-4 flex flex-col items-center gap-3">
+        <a href="https://luminousky.com/teacher-utility-kit/"
+           class="text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors text-base">
+            &larr; Teacher Utility Kit 홈으로 돌아가기
+        </a>
+        <a href="https://github.com/itmir913/exam-tools"
+           target="_blank" rel="noopener noreferrer"
+           class="text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors text-base">
+            <i class="fa-brands fa-github mr-1"></i> GitHub 저장소
+        </a>
+        <p class="text-base font-medium text-slate-400 tracking-tight">
             &copy; 2026 luminousky.com. All rights reserved.
         </p>
-
     </div>
 </footer>
 
 <script>
-    // manifest.json은 배포할 때 Actions가 만든다 (.github/scripts/build_manifest.py)
-    const MANIFEST_URL = './manifest.json';
-
-    function escapeHtml(text) {
-        return String(text).replace(/[&<>"']/g, c => ({
-            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-        })[c]);
-    }
-
-    function createCard(entry, index) {
-        return `
-        <a href="./${encodeURIComponent(entry.path)}/"
-           class="group flex items-center gap-4 bg-white dark:bg-[#1c1c1e] border border-black/[0.08] dark:border-[#333336] rounded-2xl px-6 py-5 no-underline
-                  hover:bg-[#f5f5f7] hover:border-black/[0.12] dark:hover:bg-[#2c2c2e] dark:hover:border-[#48484a]
-                  transition-colors duration-300 reveal"
-           style="transition-delay:${index * 60}ms">
-            <i class="fa-solid fa-flask text-xl text-[#86868b] dark:text-[#a1a1a6] group-hover:text-[#1d1d1f] dark:group-hover:text-[#f5f5f7] transition-colors duration-300"></i>
-            <h2 class="flex-1 min-w-0 text-lg font-semibold text-[#1d1d1f] dark:text-[#f5f5f7] leading-snug break-keep">
-                ${escapeHtml(entry.title)}
-            </h2>
-            <i class="fa-solid fa-arrow-right text-base text-[#86868b] dark:text-[#a1a1a6]
-                      opacity-0 -translate-x-1
-                      group-hover:opacity-100 group-hover:translate-x-0
-                      transition-all duration-200"></i>
-        </a>`;
-    }
-
-    function renderSkeleton() {
-        const container = document.getElementById('entries-container');
-        container.innerHTML = Array.from({ length: 4 }, () => `
-            <div class="h-[70px] rounded-2xl bg-white/60 dark:bg-[#1c1c1e]/60 border border-black/[0.06] dark:border-[#333336] animate-pulse"></div>`
-        ).join('');
-    }
-
-    function renderEntries(entries) {
-        const container = document.getElementById('entries-container');
-        const empty = document.getElementById('empty-state');
-
-        if (!entries.length) {
-            container.classList.add('hidden');
-            empty.classList.remove('hidden');
-            return;
-        }
-
-        container.innerHTML = entries.map((entry, i) => createCard(entry, i)).join('');
-    }
-
-    async function loadEntries() {
-        try {
-            const res = await fetch(MANIFEST_URL, { cache: 'no-cache' });
-            if (!res.ok) return [];
-            const data = await res.json();
-            return Array.isArray(data) ? data : [];
-        } catch (e) {
-            return [];
-        }
-    }
-
-    function initReveals() {
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('active'); });
-        }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
-
-        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-    }
-
     function initThemeToggle() {
         const root = document.documentElement;
         const toggle = document.getElementById('theme-toggle');
@@ -280,15 +175,7 @@
         });
     }
 
-    document.addEventListener('DOMContentLoaded', async () => {
-        initThemeToggle();
-        renderSkeleton();
-        document.querySelectorAll('header.reveal').forEach(el => el.classList.add('active'));
-
-        renderEntries(await loadEntries());
-
-        setTimeout(initReveals, 50);
-    });
+    initThemeToggle();
 </script>
 </body>
 </html>
