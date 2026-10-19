@@ -245,8 +245,8 @@ function render() {
       : '<span class="was">' + esc(label(from)) + '</span><span class="arrow" aria-hidden="true">→</span><span class="now">' + esc(mark) + '</span>';
     return '<tr data-i="' + i + '">'
       + '<td class="move">'
-      +   '<button type="button" class="icon-btn" data-act="up" aria-label="' + esc(mark) + ' 자리의 선택지를 위로"' + (i === 0 ? ' disabled' : '') + '>▲</button>'
-      +   '<button type="button" class="icon-btn" data-act="down" aria-label="' + esc(mark) + ' 자리의 선택지를 아래로"' + (i === last ? ' disabled' : '') + '>▼</button>'
+      +   '<button type="button" class="icon-btn" data-act="up" aria-label="' + esc(mark) + ' 자리의 선택지를 위로"' + (i === 0 ? ' disabled data-edge' : '') + '>▲</button>'
+      +   '<button type="button" class="icon-btn" data-act="down" aria-label="' + esc(mark) + ' 자리의 선택지를 아래로"' + (i === last ? ' disabled data-edge' : '') + '>▼</button>'
       + '</td>'
       + '<td class="num" aria-label="' + esc(from === i ? mark + ', 제자리' : label(from) + '에서 ' + mark + '로') + '">' + num + '</td>'
       + '<td class="body">' + esc(body) + '</td>'
@@ -261,14 +261,41 @@ function showCustom(on) {
   $('resetBtn').classList.toggle('hidden', !on);
 }
 
+/* 연타 막기: ▲▼를 누르면 순서를 바꾸고 표를 다시 그려 화면에 보일 때까지
+   표의 단추를 모두 잠근다. 그 뒤에 누른 것은 그때 그 자리에 있는 선지에 적용된다 */
+let locked = false;
+
+function lockTable() {
+  locked = true;
+  $('tbody').setAttribute('aria-busy', 'true');
+  for (const b of $('tbody').querySelectorAll('button')) b.disabled = true;
+}
+
+function unlockTable(then) {
+  // 두 프레임을 넘기면 바뀐 표가 화면에 그려진 뒤다
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    locked = false;
+    $('tbody').removeAttribute('aria-busy');
+    // 맨 위 ▲와 맨 아래 ▼는 그대로 못 누르게 둔다
+    for (const b of $('tbody').querySelectorAll('button')) b.disabled = b.hasAttribute('data-edge');
+    then();
+  }));
+}
+
 /* i번째 자리의 선지를 옆 자리(step: -1 위, +1 아래)의 선지와 바꾼다 */
 function move(i, step, act) {
   const j = i + step;
-  if (j < 0 || j >= state.picked.length) return;
+  if (locked || j < 0 || j >= state.picked.length) return;
+  locked = true;
   const next = state.picked.slice();
   [next[i], next[j]] = [next[j], next[i]];
   state.custom = next;
   render();
+  lockTable();
+  unlockTable(() => focusMoved(j, act));
+}
+
+function focusMoved(j, act) {
   // 옮긴 선지를 따라가 같은 단추에 머문다. 끝에 닿아 그 단추를 못 누르면 반대쪽 단추로
   const row = $('tbody').querySelector('tr[data-i="' + j + '"]');
   if (!row) return;
@@ -396,7 +423,7 @@ async function copyRow(i) {
 
 $('tbody').addEventListener('click', e => {
   const btn = e.target.closest('button[data-act]');
-  if (!btn || btn.disabled) return;
+  if (!btn || btn.disabled || locked) return;
   const i = Number(btn.closest('tr[data-i]').dataset.i);
   const act = btn.dataset.act;
   if (act === 'copy') copyRow(i);

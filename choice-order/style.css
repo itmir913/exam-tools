@@ -146,6 +146,8 @@ td.copy { width: 5rem; text-align: right; padding-top: .45rem; padding-bottom: .
 }
 .icon-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
 .icon-btn:disabled { opacity: .35; cursor: not-allowed; }
+/* 옮기는 동안 잠깐 잠글 때는 흐리게 하지 않는다 (누를 때마다 표가 깜빡이지 않게) */
+tbody[aria-busy="true"] .icon-btn:disabled:not([data-edge]) { opacity: 1; }
 .btn.small { padding: .3rem .8rem; }
 /* 번호 칸: 원래 자리(흐리게) → 지금 자리 */
 td.num { width: 7.5rem; white-space: nowrap; font-weight: 700; color: var(--accent); }
