@@ -118,15 +118,15 @@
 
       <div id="errorBox" class="hidden callout" role="alert"></div>
 
-      <section id="resultSec" class="hidden panel block" aria-label="정렬 결과">
+      <section id="resultSec" class="panel block is-idle" aria-label="정렬 결과" aria-disabled="true">
         <div class="block-head">
           <h2>정렬 결과</h2>
           <span class="spacer">
             <span id="copyMsg" class="meta" aria-live="polite"></span>
-            <button id="copyBtn" type="button" class="btn primary">결과 복사</button>
+            <button id="copyBtn" type="button" class="btn primary" disabled>결과 복사</button>
           </span>
         </div>
-        <pre id="output" class="paste out" tabindex="0" aria-label="정렬 결과"></pre>
+        <pre id="output" class="paste out" tabindex="0" aria-label="정렬 결과" data-empty="붙여 넣으면 여기에 정렬한 결과가 나옵니다."></pre>
         <p class="hint">탭은 시험지처럼 일정한 칸(공백 16칸 자리)에서 끊기게 그렸습니다. 복사하면 탭은 탭 그대로 나가므로 한글·워드·엑셀에서 칸이 맞습니다.</p>
 
         <div class="table-wrap">
@@ -151,11 +151,26 @@ const X = window.ChoiceOrder;
 /* ───────────── 결과 만들기 ───────────── */
 const state = { order: 'len', mark: 'keep', layout: 'keep', sep: 'tab', outText: '', rowText: [] };
 
+// 결과 카드는 늘 보인다. 보여 줄 결과가 없으면 비우고 흐리게 둘 뿐 없애지 않는다
+function setIdle(idle) {
+  $('resultSec').classList.toggle('is-idle', idle);
+  $('resultSec').setAttribute('aria-disabled', String(idle));
+  $('copyBtn').disabled = idle;
+  if (idle) {
+    state.outText = '';
+    state.rowText = [];
+    $('output').textContent = '';
+    $('tbody').replaceChildren();
+    $('copyMsg').textContent = '';
+    $('headMsg').classList.add('hidden');
+  }
+}
+
 function render() {
   const text = $('input').value;
   const err = $('errorBox');
   if (text.trim() === '') {
-    $('resultSec').classList.add('hidden');
+    setIdle(true);
     err.classList.add('hidden');
     $('kindMsg').textContent = '';
     return;
@@ -168,7 +183,7 @@ function render() {
   });
 
   if (!r.ok) {
-    $('resultSec').classList.add('hidden');
+    setIdle(true);
     err.textContent = '선택지를 두 개 이상 찾지 못했습니다. 번호가 붙은 선택지나 줄마다 하나씩 적은 글을 붙여 넣어 주세요.';
     err.classList.remove('hidden');
     $('kindMsg').textContent = '';
@@ -192,7 +207,7 @@ function render() {
 
   state.outText = r.out;
   $('output').textContent = r.out;
-  $('resultSec').classList.remove('hidden');
+  setIdle(false);
   $('copyMsg').textContent = '';
   $('rowMsg').textContent = '표의 줄을 누르면 그 선택지만 복사합니다.';
 

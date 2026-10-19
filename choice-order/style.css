@@ -137,3 +137,9 @@ td.body { white-space: pre-line; }
 .num-col { width: 4.5rem; }
 .right { text-align: right; width: 7rem; }
 td.muted { color: var(--muted); }
+
+/* 결과가 아직 없을 때: 카드는 그대로 두고 흐리게, 누를 수 없게 한다 */
+.is-idle { opacity: .5; }
+.is-idle .table-wrap, .is-idle .btn { pointer-events: none; }
+pre.paste:empty::before { content: attr(data-empty); color: var(--muted); }
+.btn:disabled { cursor: not-allowed; }
