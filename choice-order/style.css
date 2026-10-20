@@ -51,7 +51,7 @@ body {
   font-weight: 700; color: var(--accent); background: var(--accent-soft); border: 1px solid transparent;
   transition: border-color .15s;
 }
-.crumb:hover { border-color: var(--accent); }
+@media (hover: hover) { .crumb:hover { border-color: var(--accent); } }
 .top-meta { display: flex; align-items: center; flex-wrap: wrap; gap: .6rem 1.25rem; margin-top: 1.1rem; }
 
 /* 테마 단추: 머리 오른쪽 위. 바꿨을 때 갈 테마의 아이콘을 보여 준다 */
@@ -60,7 +60,7 @@ body {
   border-radius: 50%; border: 1px solid var(--line-strong); background: var(--panel); color: var(--muted);
   cursor: pointer; transition: color .15s, border-color .15s;
 }
-.theme-toggle:hover { color: var(--ink); border-color: var(--accent); }
+@media (hover: hover) { .theme-toggle:hover { color: var(--ink); border-color: var(--accent); } }
 .theme-toggle .icon-sun { display: none; }
 :root[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
 :root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
@@ -81,7 +81,7 @@ body {
   border: 1px solid var(--line-strong); background: transparent; color: var(--ink);
   transition: background .15s, border-color .15s, color .15s;
 }
-.chip:hover { border-color: var(--accent); color: var(--accent); }
+@media (hover: hover) { .chip:hover { border-color: var(--accent); color: var(--accent); } }
 .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
 
 .note { margin: .75rem 0 0; color: var(--muted); }
@@ -104,9 +104,9 @@ body {
   border: 1px solid var(--line-strong); background: var(--panel); color: var(--ink);
   transition: background .15s, border-color .15s;
 }
-.btn:hover { border-color: var(--accent); }
+@media (hover: hover) { .btn:hover { border-color: var(--accent); } }
 .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
-.btn.primary:hover { filter: brightness(1.08); }
+@media (hover: hover) { .btn.primary:hover { filter: brightness(1.08); } }
 
 /* 붙여 넣는 칸과 결과 칸: 탭과 줄바꿈을 그대로 보이게 둔다.
    결과는 시험지처럼 글자 그대로 그린다 (탭은 공백 16칸 자리에서 끊긴다) */
@@ -139,7 +139,8 @@ table { width: 100%; min-width: 36rem; border-collapse: collapse; font-variant-n
 th { text-align: left; font-weight: 600; color: var(--muted); padding: .5rem .75rem; border-bottom: 1px solid var(--line-strong); white-space: nowrap; }
 td { padding: .65rem .75rem; border-bottom: 1px solid var(--line); vertical-align: top; }
 tbody tr { transition: background .12s; }
-tbody tr:hover, tbody tr:focus-within { background: var(--accent-soft); }
+tbody tr:focus-within { background: var(--accent-soft); }
+@media (hover: hover) { tbody tr:hover { background: var(--accent-soft); } }
 td.move { width: 5.5rem; white-space: nowrap; padding-top: .45rem; padding-bottom: .45rem; }
 .move-col { width: 5.5rem; }
 td.copy { width: 5rem; text-align: right; padding-top: .45rem; padding-bottom: .45rem; }
@@ -150,7 +151,7 @@ td.copy { width: 5rem; text-align: right; padding-top: .45rem; padding-bottom: .
   border: 1px solid var(--line-strong); background: var(--panel); color: var(--ink);
   transition: border-color .15s, color .15s;
 }
-.icon-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+@media (hover: hover) { .icon-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); } }
 .icon-btn:disabled { opacity: .35; cursor: not-allowed; }
 /* 옮기는 동안 잠깐 잠글 때는 흐리게 하지 않는다 (누를 때마다 표가 깜빡이지 않게) */
 tbody[aria-busy="true"] .icon-btn:disabled:not([data-edge]) { opacity: 1; }
@@ -170,7 +171,8 @@ td.body { white-space: pre-line; }
 .btn:disabled { cursor: not-allowed; }
 
 /* 좁은 화면: 표를 옆으로 밀어 보게 하지 않고 선택지마다 카드로 쌓는다.
-   (순서 단추·번호·글자 수·복사가 한 줄, 선택지 글은 그 아래 전체 폭) */
+   읽는 것이 먼저다: 왼쪽에 번호, 오른쪽에 선택지 글, 그 아래 줄에 ▲▼ · 글자 수 · 복사.
+   단추는 손가락으로 누르기 좋게 키우고 서로 떼어 놓는다 */
 @media (max-width: 40rem) {
   .wrap { padding-inline: 1rem; }
   .settings, .block { padding: 1.25rem 1rem; }
@@ -178,15 +180,22 @@ td.body { white-space: pre-line; }
   thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   table, tbody { display: block; }
   tbody tr {
-    display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto;
-    grid-template-areas: "move num right copy" "body body body body";
-    align-items: center; column-gap: .5rem; padding: .6rem .25rem; border-bottom: 1px solid var(--line);
+    display: grid; grid-template-columns: 3.6rem auto minmax(0, 1fr) auto;
+    grid-template-areas: "num body body body" ". move right copy";
+    align-items: center; column-gap: .4rem; row-gap: .5rem; padding: .85rem .25rem; border-bottom: 1px solid var(--line);
   }
   tbody td, tbody td[class] { display: block; padding: 0; border: 0; width: auto; }
-  td.move { grid-area: move; }
-  td.num { grid-area: num; white-space: normal; }
-  td.right { grid-area: right; width: auto; text-align: right; color: var(--muted); }
+  td.num { grid-area: num; white-space: normal; align-self: start; line-height: 1.5; }
+  td.body { grid-area: body; align-self: start; }
+  td.move { grid-area: move; display: flex; gap: .5rem; }
+  td.move .icon-btn { width: 2.5rem; height: 2.5rem; margin: 0; }
+  td.right { grid-area: right; text-align: right; padding-right: .25rem; white-space: nowrap; color: var(--muted); }
   td.right::after { content: '자'; }
   td.copy { grid-area: copy; }
-  td.body { grid-area: body; margin-top: .4rem; }
+  td.copy .btn { min-height: 2.5rem; }
 }
+
+/* 방금 옮긴 선택지를 잠깐 칠해 어디로 갔는지 보인다 */
+tbody tr.moved { animation: moved 1s ease-out; }
+@keyframes moved { from { background: var(--accent-soft); } to { background: transparent; } }
+@media (prefers-reduced-motion: reduce) { tbody tr.moved { animation: none; background: var(--accent-soft); } }

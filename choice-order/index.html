@@ -309,9 +309,18 @@ function move(i, step, act) {
   const next = state.picked.slice();
   [next[i], next[j]] = [next[j], next[i]];
   state.custom = next;
+  // 누른 선택지가 화면에 보이던 높이를 적어 둔다 (아래에서 그 자리에 붙들어 둔다)
+  const was = $('tbody').querySelector('tr[data-i="' + i + '"]');
+  const box = was ? was.getBoundingClientRect() : null;
+  const top = box && box.bottom > 0 && box.top < window.innerHeight ? box.top : null; // 화면에 조금이라도 보일 때만
   render();
   lockTable();
   const row = $('tbody').querySelector('tr[data-i="' + j + '"]');
+  if (row) {
+    // 옮긴 선택지가 손가락 밑에 그대로 있게 쪽을 같이 민다. 그래야 ▼를 연달아 눌러도 같은 선택지가 내려간다
+    if (top !== null) window.scrollBy(0, row.getBoundingClientRect().top - top);
+    row.classList.add('moved');
+  }
   if (row) $('rowMsg').textContent = row.querySelector('.num .now').textContent + ' 자리로 옮겼습니다: ' + clip(state.rowText[j]);
   const mine = drawn;
   unlockTable(() => {

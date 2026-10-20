@@ -2,6 +2,8 @@
  *  두 도구는 같은 양식(남색 머리글 + 흰 칸 + 얇은 괘선)이라 색 이름도 같다.
  *  CDN tailwind를 쓸 때 각 index.html에 적어 두었던 설정을 그대로 옮긴 것이다. */
 export default {
+  // hover:는 마우스처럼 hover가 되는 기기에서만 (터치 기기에서 눌렀던 자리에 hover 모양이 남지 않게)
+  future: { hoverOnlyWhenSupported: true },
   content: [
     './index.html',
     './create-points/**/*.{html,js}',
