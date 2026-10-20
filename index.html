@@ -66,7 +66,8 @@
         .blob-2 { top: -10%; right: 0; width: max(40vw, 340px); height: max(40vw, 340px); background: #7ca6f2; animation-delay: -5s; }
         .blob-3 { bottom: -10%; left: 10%; width: max(60vw, 480px); height: max(60vw, 480px); background: #ffbfa1; animation-delay: -10s; }
         [data-theme="dark"] .ambient-blob { opacity: 0.3; }
-        @media (prefers-reduced-motion: reduce) {
+        /* 움직이는 100px 블러는 폰에서 스크롤을 버벅이게 하고 배터리를 먹는다. 터치 기기에서는 멈춰 둔다 */
+        @media (prefers-reduced-motion: reduce), (hover: none) and (pointer: coarse) {
             .ambient-blob { animation: none; }
         }
 

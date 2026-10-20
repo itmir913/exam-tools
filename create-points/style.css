@@ -167,9 +167,13 @@ tr.zero .lock { color: var(--muted); }
   .wrap { padding-inline: 1rem; }
   .panel { padding: 1.25rem 1rem; }
   .copy-msg { min-height: 1.6em; }
-  .actions { justify-content: flex-end; }
-  .actions .push { margin-left: 0; width: 100%; flex-direction: column-reverse; align-items: flex-end; gap: .5rem; }
-  .actions .stale { min-height: 3.2em; text-align: right; }
+  /* 안내 글은 [계산] 왼쪽에 둔다 (숨겨도 자리는 지켜, 나타나도 단추가 밀리지 않는다) */
+  .actions .push { margin-left: 0; width: 100%; flex-wrap: nowrap; justify-content: flex-end; gap: .75rem; }
+  .actions .stale { flex: 1; min-width: 0; text-align: right; }
+  .actions .push .btn { flex: none; }
+  /* 누를 곳은 눈에 보이는 크기는 그대로 두고 누를 수 있는 영역만 넓힌다 */
+  .link { padding-block: .45rem; margin-block: -.45rem; }
+  summary { padding-block: .5rem; }
   .table-wrap th, .table-wrap td { padding-inline: .3rem; }
   th { white-space: normal; }
   .table-wrap table { min-width: 0; }
@@ -181,4 +185,12 @@ tr.zero .lock { color: var(--muted); }
   .stat th { white-space: normal; }
   .stepper .label { min-width: 0; padding-inline: .6rem; }
   .stepper.alt .label { min-width: 0; }
+}
+/* 아주 좁은 화면(320px 안팎): 배점표 여섯 열이 한 화면에 들어오게 더 조인다 */
+@media (max-width: 23rem) {
+  .table-wrap th, .table-wrap td { padding-inline: .15rem; }
+  .table-wrap th:first-child { width: 2rem !important; }
+  .count { width: 2.75rem; }
+  .lock { width: 1.5rem; }
+  .badge { padding-inline: .4rem; }
 }
