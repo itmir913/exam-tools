@@ -1,5 +1,2 @@
-/* 랜딩의 스타일시트. 카드와 바닥글의 아이콘 때문에 Font Awesome이 더 붙는다. */
+/* 랜딩의 스타일시트. 아이콘은 index.html에 인라인 SVG로 적는다. */
 @import './src/base.css';
-@import '@fortawesome/fontawesome-free/css/fontawesome.css';
-@import '@fortawesome/fontawesome-free/css/solid.css';
-@import '@fortawesome/fontawesome-free/css/brands.css';

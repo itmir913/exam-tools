@@ -18,8 +18,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="지필평가 출제 시 반복되는 배점 산출과 선택지 정렬 작업을 브라우저에서 처리하는 도구 모음입니다.">
     <title>지필평가 도구 | Teacher Utility Kit</title>
-    <link rel="icon" href="https://luminousky.com/favicon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="https://luminousky.com/apple-touch-icon.png">
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png">
 
     <link rel="stylesheet" href="./style.css">
 
@@ -71,6 +71,16 @@
             .ambient-blob { animation: none; }
         }
 
+        /* 인라인 SVG 아이콘 (글자 높이에 맞춘다) */
+        .ico {
+            display: inline-block;
+            flex: none;
+            width: auto;
+            height: 1em;
+            fill: currentColor;
+            vertical-align: -0.125em;
+        }
+
         /* Theme toggle: show the icon of the theme you would switch to */
         .theme-toggle .icon-sun {
             display: none;
@@ -100,8 +110,8 @@
                    border border-slate-200/60 bg-white/40 backdrop-blur text-slate-500 hover:text-slate-800
                    dark:border-[#333336]/60 dark:bg-[#1c1c1e]/40 dark:text-[#a1a1a6] dark:hover:text-[#f5f5f7]
                    transition-colors duration-300">
-        <i class="icon-moon fa-solid fa-moon"></i>
-        <i class="icon-sun fa-solid fa-sun"></i>
+        <svg class="ico icon-moon" viewBox="0 0 384 512" aria-hidden="true"><path d="M223.5 32C100 32 0 132.3 0 256S100 480 223.5 480c60.6 0 115.5-24.2 155.8-63.4c5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6c-96.9 0-175.5-78.8-175.5-176c0-65.8 36-123.1 89.3-153.3c6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-6.3-.5-12.6-.8-19-.8z"/></svg>
+        <svg class="ico icon-sun" viewBox="0 0 512 512" aria-hidden="true"><path d="M361.5 1.2c5 2.1 8.6 6.6 9.6 11.9L391 121l107.9 19.8c5.3 1 9.8 4.6 11.9 9.6s1.5 10.7-1.6 15.2L446.9 256l62.3 90.3c3.1 4.5 3.7 10.2 1.6 15.2s-6.6 8.6-11.9 9.6L391 391 371.1 498.9c-1 5.3-4.6 9.8-9.6 11.9s-10.7 1.5-15.2-1.6L256 446.9l-90.3 62.3c-4.5 3.1-10.2 3.7-15.2 1.6s-8.6-6.6-9.6-11.9L121 391 13.1 371.1c-5.3-1-9.8-4.6-11.9-9.6s-1.5-10.7 1.6-15.2L65.1 256 2.8 165.7c-3.1-4.5-3.7-10.2-1.6-15.2s6.6-8.6 11.9-9.6L121 121 140.9 13.1c1-5.3 4.6-9.8 9.6-11.9s10.7-1.5 15.2 1.6L256 65.1 346.3 2.8c4.5-3.1 10.2-3.7 15.2-1.6zM160 256a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zm224 0a128 128 0 1 0 -256 0 128 128 0 1 0 256 0z"/></svg>
     </button>
     <div class="relative z-10 max-w-4xl mx-auto">
         <a href="https://luminousky.com/teacher-utility-kit/" class="inline-block mb-4 px-4 py-2 bg-white/20 dark:bg-white/5 backdrop-blur-sm border border-white/40 dark:border-white/10 text-indigo-600 dark:text-indigo-400 rounded-full text-base font-bold tracking-wide [@media(hover:hover)]:hover:bg-white/40 dark:[@media(hover:hover)]:hover:bg-white/10 active:bg-white/40 dark:active:bg-white/10 no-underline transition [-webkit-tap-highlight-color:transparent] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
@@ -118,7 +128,7 @@
         <p class="inline-block mt-8 px-5 py-2 rounded-2xl sm:rounded-full text-base font-medium text-center
                   bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-white/60 dark:border-white/10
                   text-slate-600 dark:text-[#a1a1a6]">
-            <i class="fa-solid fa-lock mr-1.5 text-indigo-500 dark:text-indigo-400" aria-hidden="true"></i>설치 없이 사용하고, 입력한 내용은 외부로 전송되지 않습니다
+            <svg class="ico mr-1.5 text-indigo-500 dark:text-indigo-400" viewBox="0 0 448 512" aria-hidden="true"><path d="M144 144l0 48 160 0 0-48c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192l0-48C80 64.5 144.5 0 224 0s144 64.5 144 144l0 48 16 0c35.3 0 64 28.7 64 64l0 192c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 256c0-35.3 28.7-64 64-64l16 0z"/></svg>설치 없이 사용하고, 입력한 내용은 외부로 전송되지 않습니다
         </p>
     </div>
 </header>
@@ -140,7 +150,7 @@
                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
                 <div class="flex items-center gap-5 mb-6">
                     <div class="shrink-0 w-16 h-16 bg-blue-50/80 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center text-3xl ring-1 ring-blue-100 dark:ring-blue-400/20">
-                        <i class="fa-solid fa-scale-balanced"></i>
+                        <svg class="ico" viewBox="0 0 640 512" aria-hidden="true"><path d="M384 32l128 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L398.4 96c-5.2 25.8-22.9 47.1-46.4 57.3L352 448l160 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-192 0-192 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l160 0 0-294.7c-23.5-10.3-41.2-31.6-46.4-57.3L128 96c-17.7 0-32-14.3-32-32s14.3-32 32-32l128 0c14.6-19.4 37.8-32 64-32s49.4 12.6 64 32zm55.6 288l144.9 0L512 195.8 439.6 320zM512 416c-62.9 0-115.2-34-126-78.9c-2.6-11 1-22.3 6.7-32.1l95.2-163.2c5-8.6 14.2-13.8 24.1-13.8s19.1 5.3 24.1 13.8l95.2 163.2c5.7 9.8 9.3 21.1 6.7 32.1C627.2 382 574.9 416 512 416zM126.8 195.8L54.4 320l144.9 0L126.8 195.8zM.9 337.1c-2.6-11 1-22.3 6.7-32.1l95.2-163.2c5-8.6 14.2-13.8 24.1-13.8s19.1 5.3 24.1 13.8l95.2 163.2c5.7 9.8 9.3 21.1 6.7 32.1C242 382 189.7 416 126.8 416S11.7 382 .9 337.1z"/></svg>
                     </div>
                     <div>
                         <h3 class="text-2xl font-bold text-slate-800 dark:text-[#f5f5f7] break-keep">지필평가 배점 생성기</h3>
@@ -152,7 +162,7 @@
                     문항을 틀린 학생 간의 동점을 최소화하며, 난이도별 문항 수 비율도 함께 반영합니다.
                 </p>
                 <span class="mt-auto self-end inline-flex items-center text-blue-600 dark:text-blue-400 group-hover:text-blue-800 dark:group-hover:text-blue-300 font-bold text-base">
-                    바로가기 <i class="fa-solid fa-arrow-right ml-2 transition-transform duration-200 group-hover:translate-x-1"></i>
+                    바로가기 <svg class="ico ml-2 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 448 512" aria-hidden="true"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
                 </span>
             </a>
 
@@ -165,7 +175,7 @@
                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
                 <div class="flex items-center gap-5 mb-6">
                     <div class="shrink-0 w-16 h-16 bg-indigo-50/80 dark:bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 rounded-2xl flex items-center justify-center text-3xl ring-1 ring-indigo-100 dark:ring-indigo-400/20">
-                        <i class="fa-solid fa-arrow-down-short-wide"></i>
+                        <svg class="ico" viewBox="0 0 576 512" aria-hidden="true"><path d="M151.6 469.6C145.5 476.2 137 480 128 480s-17.5-3.8-23.6-10.4l-88-96c-11.9-13-11.1-33.3 2-45.2s33.3-11.1 45.2 2L96 365.7 96 64c0-17.7 14.3-32 32-32s32 14.3 32 32l0 301.7 32.4-35.4c11.9-13 32.2-13.9 45.2-2s13.9 32.2 2 45.2l-88 96zM320 32l32 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32 0c-17.7 0-32-14.3-32-32s14.3-32 32-32zm0 128l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-96 0c-17.7 0-32-14.3-32-32s14.3-32 32-32zm0 128l160 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-160 0c-17.7 0-32-14.3-32-32s14.3-32 32-32zm0 128l224 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-224 0c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/></svg>
                     </div>
                     <div>
                         <h3 class="text-2xl font-bold text-slate-800 dark:text-[#f5f5f7] break-keep">지필평가 선택지 정렬기</h3>
@@ -178,7 +188,7 @@
                     그대로 활용할 수 있습니다.
                 </p>
                 <span class="mt-auto self-end inline-flex items-center text-blue-600 dark:text-blue-400 group-hover:text-blue-800 dark:group-hover:text-blue-300 font-bold text-base">
-                    바로가기 <i class="fa-solid fa-arrow-right ml-2 transition-transform duration-200 group-hover:translate-x-1"></i>
+                    바로가기 <svg class="ico ml-2 transition-transform duration-200 group-hover:translate-x-1" viewBox="0 0 448 512" aria-hidden="true"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
                 </span>
             </a>
 
@@ -196,13 +206,13 @@
         <nav class="flex flex-wrap items-center justify-center gap-x-6 gap-y-2" aria-label="외부 링크">
             <a href="https://luminousky.com/teacher-utility-kit/"
                class="inline-flex items-center gap-2 text-slate-500 dark:text-[#a1a1a6] hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors text-base">
-                <i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Teacher Utility Kit 홈
+                <svg class="ico" viewBox="0 0 448 512" aria-hidden="true"><path d="M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg> Teacher Utility Kit 홈
             </a>
             <span class="w-1 h-1 rounded-full bg-slate-300 dark:bg-[#48484a]" aria-hidden="true"></span>
             <a href="https://github.com/itmir913/exam-tools"
                target="_blank" rel="noopener noreferrer"
                class="inline-flex items-center gap-2 text-slate-500 dark:text-[#a1a1a6] hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors text-base">
-                <i class="fa-brands fa-github" aria-hidden="true"></i> GitHub 저장소
+                <svg class="ico" viewBox="0 0 496 512" aria-hidden="true"><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg> GitHub 저장소
             </a>
         </nav>
         <p class="text-base text-slate-400 dark:text-[#86868b] tracking-tight">
