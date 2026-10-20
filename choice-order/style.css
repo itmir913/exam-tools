@@ -167,6 +167,9 @@ td.body { white-space: pre-line; }
 /* 결과가 아직 없을 때: 카드는 그대로 두고 흐리게, 누를 수 없게 한다 */
 .is-idle { opacity: .5; }
 .is-idle .table-wrap, .is-idle .btn { pointer-events: none; }
+/* 빈 표와 안내 줄·복사 안내 자리는 결과가 없을 때 빈 공간만 남기므로 접는다 */
+.is-idle .table-wrap, .is-idle .row-hint { display: none; }
+.is-idle .copy-bar .meta { min-height: 0; }
 .paste::placeholder { color: var(--muted); opacity: 1; }
 .btn:disabled { cursor: not-allowed; }
 
@@ -180,12 +183,13 @@ td.body { white-space: pre-line; }
   thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   table, tbody { display: block; }
   tbody tr {
-    display: grid; grid-template-columns: 3.6rem auto minmax(0, 1fr) auto;
+    display: grid; grid-template-columns: 6rem auto minmax(0, 1fr) auto;
     grid-template-areas: "num body body body" ". move right copy";
     align-items: center; column-gap: .4rem; row-gap: .5rem; padding: .85rem .25rem; border-bottom: 1px solid var(--line);
   }
   tbody td, tbody td[class] { display: block; padding: 0; border: 0; width: auto; }
-  td.num { grid-area: num; white-space: normal; align-self: start; line-height: 1.5; }
+  td.num { grid-area: num; white-space: nowrap; align-self: start; line-height: 1.5; }
+  td.num .arrow { margin: 0 .2rem; }
   td.body { grid-area: body; align-self: start; }
   td.move { grid-area: move; display: flex; gap: .5rem; }
   td.move .icon-btn { width: 2.5rem; height: 2.5rem; margin: 0; }
