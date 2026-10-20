@@ -135,14 +135,14 @@
             <tbody id="tbody"></tbody>
           </table>
         </div>
-        <p class="hint"><span id="rowMsg" aria-live="polite"></span></p>
+        <p class="hint row-hint"><span id="rowMsg" aria-live="polite"></span></p>
 
         <textarea id="output" class="paste out" readonly spellcheck="false" aria-label="정렬 결과"
           placeholder="붙여 넣으면 여기에 정렬한 결과가 나옵니다."></textarea>
         <p class="hint">탭은 시험지처럼 일정한 칸(공백 16칸 자리)에서 끊기게 그렸습니다. 복사하면 탭은 탭 그대로 나가므로 한글·워드·엑셀에서 칸이 맞습니다.</p>
         <div class="copy-bar">
-          <span id="copyMsg" class="meta" aria-live="polite"></span>
           <button id="copyBtn" type="button" class="btn primary" disabled>결과 복사</button>
+          <span id="copyMsg" class="meta" aria-live="polite"></span>
         </div>
       </section>
     </div>
@@ -312,7 +312,7 @@ function move(i, step, act) {
   render();
   lockTable();
   const row = $('tbody').querySelector('tr[data-i="' + j + '"]');
-  if (row) $('rowMsg').textContent = row.querySelector('.num .now').textContent + ' 자리로 옮겼습니다: ' + state.rowText[j];
+  if (row) $('rowMsg').textContent = row.querySelector('.num .now').textContent + ' 자리로 옮겼습니다: ' + clip(state.rowText[j]);
   const mine = drawn;
   unlockTable(() => {
     // 그사이 다른 단추가 표를 다시 그렸으면 (정렬 칩, 입력 등) 옮긴 선지가 그 자리에 없으므로
@@ -330,6 +330,12 @@ function focusMoved(j, act) {
   if (!row) return;
   const btn = row.querySelector('button[data-act="' + act + '"]');
   (btn && !btn.disabled ? btn : row.querySelector('button[data-act="' + (act === 'up' ? 'down' : 'up') + '"]')).focus();
+}
+
+// 안내 글에 싣는 선택지는 길면 줄여 보인다 (글이 길수록 줄이 늘어 화면이 출렁인다)
+function clip(s, n = 24) {
+  s = String(s).replace(/\s+/g, ' ').trim();
+  return s.length > n ? s.slice(0, n) + '…' : s;
 }
 
 function esc(s) {
@@ -445,7 +451,7 @@ async function copyRow(i) {
   if (text === undefined) return;
   const done = await copyText(text);
   $('rowMsg').textContent = done
-    ? '이 선택지를 복사했습니다: ' + text
+    ? '이 선택지를 복사했습니다: ' + clip(text)
     : '이 브라우저에서는 클립보드에 쓸 수 없습니다.';
 }
 

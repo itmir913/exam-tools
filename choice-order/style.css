@@ -118,7 +118,10 @@ body {
 .paste:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: var(--accent); }
 /* 결과 칸은 읽기 전용이다. 손으로 고칠 수는 없지만 끌어 선택해 복사할 수는 있다 */
 .paste.out { min-height: 0; margin-top: 1.25rem; resize: none; }
-.copy-bar { display: flex; align-items: center; justify-content: flex-end; flex-wrap: wrap; gap: .6rem; margin-top: 1rem; }
+.copy-bar { display: flex; flex-direction: column; align-items: flex-end; gap: .5rem; margin-top: 1rem; }
+/* 복사 결과 글은 단추 아래에 둔다. 글이 나타났다 사라져도 단추가 밀리지 않게 한 줄(좁은 화면은 두 줄)을 비워 둔다 */
+.copy-bar .meta { min-height: 1.6em; text-align: right; }
+@media (max-width: 40rem) { .copy-bar .meta { min-height: 3.2em; } }
 
 .callout {
   padding: .9rem 1.1rem; border-radius: 10px; border: 1px solid var(--line);
@@ -126,9 +129,12 @@ body {
 }
 
 .hint { margin: .9rem 0 0; color: var(--muted); }
+/* ▲▼를 누를 때마다 바뀌는 안내 글: 줄 수가 달라져 아래가 출렁이지 않게 자리를 잡아 둔다 */
+.row-hint { min-height: 1.6em; }
+@media (max-width: 40rem) { .row-hint { min-height: 3.2em; } }
 
 /* 결과 표: ▲▼로 선택지의 자리를 바꾸고, 복사로 그 선택지만 복사한다 */
-.table-wrap { overflow-x: auto; }
+.table-wrap { overflow-x: auto; position: relative; } /* position: 안의 sr-only(absolute)가 스크롤 상자 밖으로 새어 쪽이 가로로 넓어지지 않게 */
 table { width: 100%; min-width: 36rem; border-collapse: collapse; font-variant-numeric: tabular-nums; }
 th { text-align: left; font-weight: 600; color: var(--muted); padding: .5rem .75rem; border-bottom: 1px solid var(--line-strong); white-space: nowrap; }
 td { padding: .65rem .75rem; border-bottom: 1px solid var(--line); vertical-align: top; }
@@ -162,3 +168,25 @@ td.body { white-space: pre-line; }
 .is-idle .table-wrap, .is-idle .btn { pointer-events: none; }
 .paste::placeholder { color: var(--muted); opacity: 1; }
 .btn:disabled { cursor: not-allowed; }
+
+/* 좁은 화면: 표를 옆으로 밀어 보게 하지 않고 선택지마다 카드로 쌓는다.
+   (순서 단추·번호·글자 수·복사가 한 줄, 선택지 글은 그 아래 전체 폭) */
+@media (max-width: 40rem) {
+  .wrap { padding-inline: 1rem; }
+  .settings, .block { padding: 1.25rem 1rem; }
+  table { min-width: 0; }
+  thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  table, tbody { display: block; }
+  tbody tr {
+    display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto;
+    grid-template-areas: "move num right copy" "body body body body";
+    align-items: center; column-gap: .5rem; padding: .6rem .25rem; border-bottom: 1px solid var(--line);
+  }
+  tbody td, tbody td[class] { display: block; padding: 0; border: 0; width: auto; }
+  td.move { grid-area: move; }
+  td.num { grid-area: num; white-space: normal; }
+  td.right { grid-area: right; width: auto; text-align: right; color: var(--muted); }
+  td.right::after { content: '자'; }
+  td.copy { grid-area: copy; }
+  td.body { grid-area: body; margin-top: .4rem; }
+}

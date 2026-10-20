@@ -78,6 +78,10 @@
   .actions { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; margin-top: 1.25rem; }
   .actions .push { margin-left: auto; display: flex; align-items: center; gap: .9rem; flex-wrap: wrap; }
   .stale { color: var(--warn); font-weight: 600; }
+  /* 숨길 때도 자리는 지킨다: 글이 나타났다 사라질 때 [계산] 단추가 밀리지 않게 */
+  .actions .stale.hidden { display: block !important; visibility: hidden; }
+  /* 복사 결과 글: 단추 아래, 늘 한 줄(좁은 화면은 두 줄)을 비워 둔다 */
+  .copy-msg { display: block; min-height: 1.6em; margin: -.4rem 0 .6rem; text-align: right; }
   details { margin-top: 1.25rem; border-top: 1px solid var(--line); padding-top: .9rem; }
   summary { cursor: pointer; font-weight: 600; color: var(--accent); width: fit-content; }
   .adv { display: grid; gap: 1rem; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 1rem; }
@@ -100,7 +104,7 @@
   .chip b { font-weight: 700; }
 
   /* 배점표 */
-  .table-wrap { overflow-x: auto; }
+  .table-wrap { overflow-x: auto; position: relative; }
   table { width: 100%; min-width: 34rem; border-collapse: collapse; font-variant-numeric: tabular-nums; }
   th { text-align: center; font-weight: 600; color: var(--muted); padding: .5rem .75rem; border-bottom: 1px solid var(--line-strong); white-space: nowrap; }
   td { text-align: center; padding: .35rem .75rem; border-bottom: 1px solid var(--line); }
@@ -130,7 +134,7 @@
   /* 지표 */
   .stats { display: grid; gap: 1rem; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 1.25rem; }
   @media (max-width: 62rem) { .stats { grid-template-columns: minmax(0, 1fr); } }
-  .stat { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+  .stat { border: 1px solid var(--line); border-radius: 12px; overflow-x: auto; position: relative; } /* 숨기지 말고 밀 수 있게 */
   .stat h3 { padding: .6rem 1rem; background: var(--accent-soft); font-size: 1rem; font-weight: 700; }
   .stat table { min-width: 0; }
   .stat th { text-align: right; padding-inline: 1rem; }
@@ -157,3 +161,24 @@
 
 tr.zero { color: var(--muted); background: var(--bg); }
 tr.zero .lock { color: var(--muted); }
+
+/* 좁은 화면: 표가 옆으로 잘려 나가지 않게 여백과 칸을 줄여 한 화면에 담는다 */
+@media (max-width: 40rem) {
+  .wrap { padding-inline: 1rem; }
+  .panel { padding: 1.25rem 1rem; }
+  .copy-msg { min-height: 1.6em; }
+  .actions { justify-content: flex-end; }
+  .actions .push { margin-left: 0; width: 100%; flex-direction: column-reverse; align-items: flex-end; gap: .5rem; }
+  .actions .stale { min-height: 3.2em; text-align: right; }
+  .table-wrap th, .table-wrap td { padding-inline: .3rem; }
+  th { white-space: normal; }
+  .table-wrap table { min-width: 0; }
+  .table-wrap th:first-child { width: 2.5rem !important; }
+  .count { width: 3.25rem; }
+  .badge { padding-inline: .5rem; }
+  .lock { width: 1.75rem; }
+  .stat th, .stat td { padding-inline: .5rem; }
+  .stat th { white-space: normal; }
+  .stepper .label { min-width: 0; padding-inline: .6rem; }
+  .stepper.alt .label { min-width: 0; }
+}
