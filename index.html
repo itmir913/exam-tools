@@ -39,36 +39,36 @@
             overflow-wrap: break-word;
         }
 
-        /* 유리 양식 (TUK 프롬프트 갤러리와 같은 색 덩어리).
-           덩어리를 쪽 전체 뒤에 깔아 두어야 카드와 바닥글의 반투명 유리 너머로 색이 비친다 */
-        @keyframes ambient-drift {
-            0% { transform: translate(0, 0) scale(1); }
-            33% { transform: translate(5%, 5%) scale(1.05); }
-            66% { transform: translate(-5%, 2%) scale(0.95); }
-            100% { transform: translate(0, 0) scale(1); }
-        }
-        .ambient {
+        /* 모눈 작업대. TUK 프롬프트 갤러리의 색 덩어리 대신 이 쪽의 일(배점 계산·선택지 정렬)을
+           그대로 바탕에 썼다. 움직이지 않고 블러도 없어 폰에서 스크롤이 가볍다 */
+        .worksheet {
             position: fixed;
             inset: 0;
             z-index: -1;
-            overflow: hidden;
             pointer-events: none;
+            background-image:
+                linear-gradient(to right, rgba(79, 70, 229, 0.08) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(79, 70, 229, 0.08) 1px, transparent 1px);
+            background-size: 28px 28px;
+            -webkit-mask-image: radial-gradient(ellipse 85% 60% at 50% 0%, #000 35%, transparent 100%);
+            mask-image: radial-gradient(ellipse 85% 60% at 50% 0%, #000 35%, transparent 100%);
         }
-        .ambient-blob {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(100px);
-            opacity: 0.55;
-            animation: ambient-drift 15s infinite ease-in-out alternate;
+        [data-theme="dark"] .worksheet {
+            background-image:
+                linear-gradient(to right, rgba(255, 255, 255, 0.07) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.07) 1px, transparent 1px);
         }
-        /* 좁은 화면에서도 덩어리가 너무 작아지지 않게 최소 크기를 둔다 */
-        .blob-1 { top: -20%; left: 0; width: max(50vw, 420px); height: max(50vw, 420px); background: #c896ff; }
-        .blob-2 { top: -10%; right: 0; width: max(40vw, 340px); height: max(40vw, 340px); background: #7ca6f2; animation-delay: -5s; }
-        .blob-3 { bottom: -10%; left: 10%; width: max(60vw, 480px); height: max(60vw, 480px); background: #ffbfa1; animation-delay: -10s; }
-        [data-theme="dark"] .ambient-blob { opacity: 0.3; }
-        /* 움직이는 100px 블러는 폰에서 스크롤을 버벅이게 하고 배터리를 먹는다. 터치 기기에서는 멈춰 둔다 */
-        @media (prefers-reduced-motion: reduce), (hover: none) and (pointer: coarse) {
-            .ambient-blob { animation: none; }
+        /* 모눈 위에 얹는 옅은 색. 머리 쪽에만 깔려 쪽이 차갑게 비지 않는다 */
+        .wash {
+            position: fixed;
+            inset: 0 0 auto 0;
+            height: 60vh;
+            z-index: -1;
+            pointer-events: none;
+            background: linear-gradient(to bottom, rgba(129, 140, 248, 0.14), rgba(129, 140, 248, 0) 100%);
+        }
+        [data-theme="dark"] .wash {
+            background: linear-gradient(to bottom, rgba(99, 102, 241, 0.16), rgba(99, 102, 241, 0) 100%);
         }
 
         /* 인라인 SVG 아이콘 (글자 높이에 맞춘다) */
@@ -93,28 +93,27 @@
         }
     </style>
 </head>
-<!-- Teacher Utility Kit의 하위 쪽과 같은 양식이다 (프롬프트 갤러리의 유리 양식).
-     TUK 홈의 카드에서 이 쪽으로 들어오고, 머리의 배지와 바닥글로 TUK 홈에 돌아간다. -->
-<body class="bg-slate-50 dark:bg-black text-slate-700 dark:text-[#f5f5f7] min-h-screen flex flex-col relative isolate selection:bg-indigo-700 selection:text-white">
+<!-- Teacher Utility Kit의 하위 쪽이다. TUK 홈의 카드에서 들어오고, 머리의 배지와 바닥글로 돌아간다.
+     집안(Pretendard · indigo 강조 · 둥근 카드 · 배지와 바닥글)은 TUK 를 따르되, 피부는 이 쪽의 일을 쓴다.
+     프롬프트 갤러리의 유리 양식(움직이는 색 덩어리 + 반투명 카드) 대신
+     모눈 작업대 위에 놓인 불투명한 카드와, 도구마다 색이 다른 왼쪽 레일이다. -->
+<body class="bg-[#f8f9fc] dark:bg-black text-slate-700 dark:text-[#f5f5f7] min-h-screen flex flex-col relative isolate selection:bg-indigo-700 selection:text-white">
 
-<div class="ambient" aria-hidden="true">
-    <div class="ambient-blob blob-1"></div>
-    <div class="ambient-blob blob-2"></div>
-    <div class="ambient-blob blob-3"></div>
-</div>
+<div class="worksheet" aria-hidden="true"></div>
+<div class="wash" aria-hidden="true"></div>
 
 <!-- ░░ HERO ░░ -->
 <header class="relative flex flex-col items-center justify-center px-4 pt-28 pb-16 md:pt-32 md:pb-20 text-center">
     <button type="button" id="theme-toggle" aria-label="Switch to dark mode"
             class="theme-toggle absolute top-5 right-5 md:top-6 md:right-6 z-20 w-10 h-10 flex items-center justify-center rounded-full
-                   border border-slate-200/60 bg-white/40 backdrop-blur text-slate-500 hover:text-slate-800
-                   dark:border-[#333336]/60 dark:bg-[#1c1c1e]/40 dark:text-[#a1a1a6] dark:hover:text-[#f5f5f7]
+                   border border-slate-200 bg-white text-slate-500 hover:text-slate-800
+                   dark:border-[#333336] dark:bg-[#1c1c1e] dark:text-[#a1a1a6] dark:hover:text-[#f5f5f7]
                    transition-colors duration-300">
         <svg class="ico icon-moon" viewBox="0 0 384 512" aria-hidden="true"><path d="M223.5 32C100 32 0 132.3 0 256S100 480 223.5 480c60.6 0 115.5-24.2 155.8-63.4c5-4.9 6.3-12.5 3.1-18.7s-10.1-9.7-17-8.5c-9.8 1.7-19.8 2.6-30.1 2.6c-96.9 0-175.5-78.8-175.5-176c0-65.8 36-123.1 89.3-153.3c6.1-3.5 9.2-10.5 7.7-17.3s-7.3-11.9-14.3-12.5c-6.3-.5-12.6-.8-19-.8z"/></svg>
         <svg class="ico icon-sun" viewBox="0 0 512 512" aria-hidden="true"><path d="M361.5 1.2c5 2.1 8.6 6.6 9.6 11.9L391 121l107.9 19.8c5.3 1 9.8 4.6 11.9 9.6s1.5 10.7-1.6 15.2L446.9 256l62.3 90.3c3.1 4.5 3.7 10.2 1.6 15.2s-6.6 8.6-11.9 9.6L391 391 371.1 498.9c-1 5.3-4.6 9.8-9.6 11.9s-10.7 1.5-15.2-1.6L256 446.9l-90.3 62.3c-4.5 3.1-10.2 3.7-15.2 1.6s-8.6-6.6-9.6-11.9L121 391 13.1 371.1c-5.3-1-9.8-4.6-11.9-9.6s-1.5-10.7 1.6-15.2L65.1 256 2.8 165.7c-3.1-4.5-3.7-10.2-1.6-15.2s6.6-8.6 11.9-9.6L121 121 140.9 13.1c1-5.3 4.6-9.8 9.6-11.9s10.7-1.5 15.2 1.6L256 65.1 346.3 2.8c4.5-3.1 10.2-3.7 15.2-1.6zM160 256a96 96 0 1 1 192 0 96 96 0 1 1 -192 0zm224 0a128 128 0 1 0 -256 0 128 128 0 1 0 256 0z"/></svg>
     </button>
     <div class="relative z-10 max-w-4xl mx-auto">
-        <a href="https://luminousky.com/teacher-utility-kit/" class="inline-block mb-4 px-4 py-2 bg-white/20 dark:bg-white/5 backdrop-blur-sm border border-white/40 dark:border-white/10 text-indigo-600 dark:text-indigo-400 rounded-full text-base font-bold tracking-wide [@media(hover:hover)]:hover:bg-white/40 dark:[@media(hover:hover)]:hover:bg-white/10 active:bg-white/40 dark:active:bg-white/10 no-underline transition [-webkit-tap-highlight-color:transparent] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
+        <a href="https://luminousky.com/teacher-utility-kit/" class="inline-block mb-4 px-4 py-2 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-indigo-600 dark:text-indigo-400 rounded-full text-base font-bold tracking-wide [@media(hover:hover)]:hover:bg-white/40 dark:[@media(hover:hover)]:hover:bg-white/10 active:bg-white/40 dark:active:bg-white/10 no-underline transition [-webkit-tap-highlight-color:transparent] active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
             Teacher Utility Kit
         </a>
         <h1 class="text-5xl md:text-7xl font-semibold tracking-tighter mb-5 text-slate-800 dark:text-[#f5f5f7]">
@@ -126,7 +125,7 @@
         </p>
         <!-- 좁은 화면에서 두 줄로 접혀도 자물쇠가 글과 함께 흐르게 inline으로 둔다 -->
         <p class="inline-block mt-8 px-5 py-2 rounded-2xl sm:rounded-full text-base font-medium text-center
-                  bg-white/40 dark:bg-white/5 backdrop-blur-sm border border-white/60 dark:border-white/10
+                  bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10
                   text-slate-600 dark:text-[#a1a1a6]">
             <svg class="ico mr-1.5 text-indigo-500 dark:text-indigo-400" viewBox="0 0 448 512" aria-hidden="true"><path d="M144 144l0 48 160 0 0-48c0-44.2-35.8-80-80-80s-80 35.8-80 80zM80 192l0-48C80 64.5 144.5 0 224 0s144 64.5 144 144l0 48 16 0c35.3 0 64 28.7 64 64l0 192c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 256c0-35.3 28.7-64 64-64l16 0z"/></svg>설치 없이 사용하고, 입력한 내용은 외부로 전송되지 않습니다
         </p>
@@ -142,14 +141,16 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-stretch">
 
             <a href="./create-points/"
-               class="group flex flex-col p-8 rounded-3xl no-underline transition-all duration-300
-                      bg-white/60 dark:bg-[#1c1c1e]/50 backdrop-blur-xl border border-white/70 dark:border-white/10
-                      shadow-[0_8px_32px_-12px_rgba(76,61,140,0.25)] dark:shadow-[0_8px_32px_-12px_rgba(0,0,0,0.6)]
-                      hover:bg-white/80 dark:hover:bg-[#1c1c1e]/70 hover:-translate-y-0.5
-                      hover:shadow-[0_16px_40px_-12px_rgba(76,61,140,0.35)] dark:hover:shadow-[0_16px_40px_-12px_rgba(0,0,0,0.7)]
+               class="group relative flex flex-col overflow-hidden p-8 pl-9 rounded-2xl no-underline transition-all duration-300
+                      bg-white dark:bg-[#141417] border border-slate-200 dark:border-white/10
+                      shadow-[0_1px_2px_rgba(15,23,42,0.05)] dark:shadow-none
+                      hover:-translate-y-0.5 hover:border-blue-300 dark:hover:border-blue-400/40
+                      hover:shadow-[0_16px_40px_-16px_rgba(30,41,59,0.3)] dark:hover:shadow-[0_16px_40px_-16px_rgba(0,0,0,0.8)]
                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
+                <span class="absolute inset-y-0 left-0 w-1.5 bg-blue-500 dark:bg-blue-400 opacity-80 transition-opacity duration-300 group-hover:opacity-100" aria-hidden="true"></span>
+                <span class="block mb-4 font-mono text-base font-bold tabular-nums tracking-[0.12em] text-blue-600 dark:text-blue-400">01</span>
                 <div class="flex items-center gap-5 mb-6">
-                    <div class="shrink-0 w-16 h-16 bg-blue-50/80 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center text-3xl ring-1 ring-blue-100 dark:ring-blue-400/20">
+                    <div class="shrink-0 w-16 h-16 bg-blue-50/80 dark:bg-blue-500/15 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center text-3xl ring-1 ring-blue-100 dark:ring-blue-400/20">
                         <svg class="ico" viewBox="0 0 640 512" aria-hidden="true"><path d="M384 32l128 0c17.7 0 32 14.3 32 32s-14.3 32-32 32L398.4 96c-5.2 25.8-22.9 47.1-46.4 57.3L352 448l160 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-192 0-192 0c-17.7 0-32-14.3-32-32s14.3-32 32-32l160 0 0-294.7c-23.5-10.3-41.2-31.6-46.4-57.3L128 96c-17.7 0-32-14.3-32-32s14.3-32 32-32l128 0c14.6-19.4 37.8-32 64-32s49.4 12.6 64 32zm55.6 288l144.9 0L512 195.8 439.6 320zM512 416c-62.9 0-115.2-34-126-78.9c-2.6-11 1-22.3 6.7-32.1l95.2-163.2c5-8.6 14.2-13.8 24.1-13.8s19.1 5.3 24.1 13.8l95.2 163.2c5.7 9.8 9.3 21.1 6.7 32.1C627.2 382 574.9 416 512 416zM126.8 195.8L54.4 320l144.9 0L126.8 195.8zM.9 337.1c-2.6-11 1-22.3 6.7-32.1l95.2-163.2c5-8.6 14.2-13.8 24.1-13.8s19.1 5.3 24.1 13.8l95.2 163.2c5.7 9.8 9.3 21.1 6.7 32.1C242 382 189.7 416 126.8 416S11.7 382 .9 337.1z"/></svg>
                     </div>
                     <div>
@@ -167,14 +168,16 @@
             </a>
 
             <a href="./choice-order/"
-               class="group flex flex-col p-8 rounded-3xl no-underline transition-all duration-300
-                      bg-white/60 dark:bg-[#1c1c1e]/50 backdrop-blur-xl border border-white/70 dark:border-white/10
-                      shadow-[0_8px_32px_-12px_rgba(76,61,140,0.25)] dark:shadow-[0_8px_32px_-12px_rgba(0,0,0,0.6)]
-                      hover:bg-white/80 dark:hover:bg-[#1c1c1e]/70 hover:-translate-y-0.5
-                      hover:shadow-[0_16px_40px_-12px_rgba(76,61,140,0.35)] dark:hover:shadow-[0_16px_40px_-12px_rgba(0,0,0,0.7)]
+               class="group relative flex flex-col overflow-hidden p-8 pl-9 rounded-2xl no-underline transition-all duration-300
+                      bg-white dark:bg-[#141417] border border-slate-200 dark:border-white/10
+                      shadow-[0_1px_2px_rgba(15,23,42,0.05)] dark:shadow-none
+                      hover:-translate-y-0.5 hover:border-indigo-300 dark:hover:border-indigo-400/40
+                      hover:shadow-[0_16px_40px_-16px_rgba(30,41,59,0.3)] dark:hover:shadow-[0_16px_40px_-16px_rgba(0,0,0,0.8)]
                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400">
+                <span class="absolute inset-y-0 left-0 w-1.5 bg-indigo-500 dark:bg-indigo-400 opacity-80 transition-opacity duration-300 group-hover:opacity-100" aria-hidden="true"></span>
+                <span class="block mb-4 font-mono text-base font-bold tabular-nums tracking-[0.12em] text-indigo-600 dark:text-indigo-400">02</span>
                 <div class="flex items-center gap-5 mb-6">
-                    <div class="shrink-0 w-16 h-16 bg-indigo-50/80 dark:bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 rounded-2xl flex items-center justify-center text-3xl ring-1 ring-indigo-100 dark:ring-indigo-400/20">
+                    <div class="shrink-0 w-16 h-16 bg-indigo-50/80 dark:bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 rounded-xl flex items-center justify-center text-3xl ring-1 ring-indigo-100 dark:ring-indigo-400/20">
                         <svg class="ico" viewBox="0 0 576 512" aria-hidden="true"><path d="M151.6 469.6C145.5 476.2 137 480 128 480s-17.5-3.8-23.6-10.4l-88-96c-11.9-13-11.1-33.3 2-45.2s33.3-11.1 45.2 2L96 365.7 96 64c0-17.7 14.3-32 32-32s32 14.3 32 32l0 301.7 32.4-35.4c11.9-13 32.2-13.9 45.2-2s13.9 32.2 2 45.2l-88 96zM320 32l32 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-32 0c-17.7 0-32-14.3-32-32s14.3-32 32-32zm0 128l96 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-96 0c-17.7 0-32-14.3-32-32s14.3-32 32-32zm0 128l160 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-160 0c-17.7 0-32-14.3-32-32s14.3-32 32-32zm0 128l224 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-224 0c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/></svg>
                     </div>
                     <div>
