@@ -290,3 +290,6 @@ pyrightconfig.json
 # 빌드 도구
 node_modules/
 dist/
+
+# 손으로 그려 보는 시안. 저장소에 남기지 않는다
+design-draft/
